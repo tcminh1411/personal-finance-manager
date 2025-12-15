@@ -1,0 +1,344 @@
+/* 1. RESET & BASE */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  background: #f0f2f5;
+  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 2. LAYOUT */
+header {
+  text-align: center;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+footer {
+  background: white;
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid #e0e0e0;
+  color: #95a5a6;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* 3. SECTIONS */
+section {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+#addForm {
+  max-width: 400px;
+  position: sticky;
+  top: 20px;
+  flex-shrink: 0;
+}
+
+section:not(#addForm) {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+h3 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: #34495e;
+}
+
+/* Đường kẻ ngang (thay cho hr style inline) */
+.separator {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+}
+
+/* 4. FORM ELEMENTS */
+form div,
+#filter div.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #34495e;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #e1e4e8;
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: #f9fafb;
+  transition: all 0.2s;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  background-color: #fff;
+  border-color: #2ecc71;
+}
+
+/* Layout cho khu vực Lọc (thay thế inline style) */
+.filter-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-col {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* 5. BUTTONS */
+button {
+  background-color: #2ecc71;
+  color: white;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+button:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 204, 113, 0.2);
+}
+
+/* Nút trong Form ADD */
+#transactionForm {
+  text-align: center;
+}
+#transactionForm div {
+  text-align: left;
+}
+#transactionForm button {
+  width: 80%;
+  margin-top: 10px;
+}
+
+/* Nút khu vực Lọc */
+#filter {
+  text-align: center;
+  margin-bottom: 20px;
+}
+#filter div.form-group {
+  text-align: left;
+} /* Input canh trái */
+#filter-buttons {
+  text-align: center;
+  margin-top: 15px;
+} /* Nút canh giữa */
+#filter button {
+  margin: 5px;
+  min-width: 120px;
+}
+.btn-reset {
+  background-color: #95a5a6 !important;
+} /* Class riêng cho nút Reset */
+.btn-reset:hover {
+  background-color: #7f8c8d !important;
+}
+
+/* Nút Sửa/Xóa trong bảng */
+td button {
+  padding: 6px 12px;
+  min-width: auto;
+  border-radius: 6px;
+  font-size: 12px;
+  margin: 4px;
+}
+
+/* 6. SUMMARY & NOTIFICATIONS */
+.financial-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  text-align: center;
+  margin-bottom: 25px;
+}
+.financial-summary .summary-card {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  flex: 1;
+}
+.financial-summary h3 {
+  font-size: 13px;
+  margin: 0 0 8px 0;
+  color: #7f8c8d;
+  text-transform: uppercase;
+}
+.value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin: 0;
+}
+
+/* Màu sắc cho số tiền (thay thế inline style) */
+.text-green {
+  color: #27ae60;
+}
+.text-red {
+  color: #e74c3c;
+}
+.text-dark {
+  color: #2c3e50;
+}
+
+#notification,
+#emptyState {
+  min-height: 24px;
+  font-size: 14px;
+  margin-top: 15px;
+  text-align: center;
+  font-weight: 500;
+}
+.success {
+  color: #00cb55;
+}
+.error {
+  color: #dc1600;
+}
+
+/* 7. TABLE STYLES*/
+.table-wrapper {
+  overflow-x: auto;
+} /* Class bao ngoài bảng */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+th,
+td {
+  padding: 15px 10px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+th {
+  background-color: #fff;
+  color: #7f8c8d;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+th.sortable {
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+th.sortable:hover {
+  background-color: #e8f5e9;
+  color: #27ae60;
+}
+
+/* 8. MOBILE RESPONSIVE (<768px) */
+@media (max-width: 768px) {
+  main {
+    flex-direction: column;
+    padding: 10px;
+    align-items: stretch;
+  }
+
+  #addForm {
+    width: 100% !important;
+    max-width: 100%;
+    margin: 0 auto 20px auto;
+    position: static;
+  }
+  section {
+    padding: 15px;
+  }
+
+  .financial-summary {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .summary-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+  }
+  .summary-card h3 {
+    margin: 0;
+  }
+
+  th:nth-child(1),
+  td:nth-child(1),
+  th:nth-child(5),
+  td:nth-child(5) {
+    display: none;
+  }
+  th,
+  td {
+    padding: 10px 5px;
+    font-size: 13px;
+  }
+
+  th:last-child,
+  td:last-child {
+    text-align: right;
+    white-space: nowrap;
+    width: 1%;
+  }
+  td button {
+    display: inline-block !important;
+    width: auto !important;
+    padding: 5px 8px;
+    font-size: 11px;
+    margin: 0 2px;
+    box-shadow: none;
+  }
+}
