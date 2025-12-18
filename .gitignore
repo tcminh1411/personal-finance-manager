@@ -1,0 +1,13 @@
+# 1. Rác hệ thống & Editor
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 2. File log lỗi
+*.log
+error_log
+
+# 3. File nháp
+test_api.php
+test_db.php

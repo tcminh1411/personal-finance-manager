@@ -13,6 +13,23 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label,
+th,
+button,
+.value,
+.text-green,
+.text-red,
+.text-dark {
+  font-weight: 600;
 }
 
 /* 2. LAYOUT */
@@ -46,7 +63,6 @@ footer {
   flex-shrink: 0;
 }
 
-/* 3. SECTIONS */
 section {
   background: white;
   padding: 25px;
@@ -67,35 +83,60 @@ section:not(#addForm) {
   min-width: 0;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #2c3e50;
-  font-size: 1.5rem;
-}
-h3 {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-  color: #34495e;
-}
-
-/* Đường kẻ ngang (thay cho hr style inline) */
 .separator {
   border: 0;
   border-top: 1px solid #eee;
   margin: 20px 0;
 }
 
+/* 3. TYPOGRAPHY & UTILITIES */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: #34495e;
+}
+
+/* Màu sắc & Trạng thái */
+.text-green {
+  color: #27ae60;
+}
+.text-red {
+  color: #e74c3c;
+}
+.text-dark {
+  color: #2c3e50;
+}
+
+#notification {
+  min-height: 24px;
+  font-size: 14px;
+  margin-top: 15px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.success {
+  color: #00cb55;
+}
+.error {
+  color: #dc1600;
+}
+
 /* 4. FORM ELEMENTS */
-form div,
-#filter div.form-group {
+.form-group {
   margin-bottom: 15px;
 }
 
 label {
   display: block;
   margin-bottom: 8px;
-  font-weight: 600;
   color: #34495e;
 }
 
@@ -117,84 +158,115 @@ select:focus {
   border-color: #2ecc71;
 }
 
-/* Layout cho khu vực Lọc (thay thế inline style) */
+/* Layout bộ lọc */
 .filter-row {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
-
 .filter-col {
   flex: 1;
   min-width: 150px;
 }
+#filter {
+  text-align: center;
+  margin-bottom: 20px;
+}
+#filter .form-group {
+  text-align: left;
+}
+#filter-buttons {
+  text-align: center;
+  margin-top: 15px;
+}
 
-/* 5. BUTTONS */
+/* 5. BUTTONS (Refactored)n*/
 button {
-  background-color: #2ecc71;
+  background-color: #2ecc71; /* Màu xanh lá mặc định */
   color: white;
   cursor: pointer;
-  border: none;
+  border: 1px solid transparent;
   transition: all 0.2s ease;
   padding: 12px 24px;
   border-radius: 50px;
-  font-weight: 600;
   font-size: 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
+
 button:hover {
   background-color: #27ae60;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(46, 204, 113, 0.2);
 }
 
-/* Nút trong Form ADD */
-#transactionForm {
-  text-align: center;
-}
-#transactionForm div {
-  text-align: left;
-}
-#transactionForm button {
-  width: 80%;
-  margin-top: 10px;
+button:disabled {
+  background-color: #95a5a6 !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
 }
 
-/* Nút khu vực Lọc */
-#filter {
-  text-align: center;
-  margin-bottom: 20px;
-}
-#filter div.form-group {
-  text-align: left;
-} /* Input canh trái */
-#filter-buttons {
-  text-align: center;
-  margin-top: 15px;
-} /* Nút canh giữa */
-#filter button {
-  margin: 5px;
-  min-width: 120px;
-}
+/* Các biến thể nút */
 .btn-reset {
   background-color: #95a5a6 !important;
-} /* Class riêng cho nút Reset */
+}
 .btn-reset:hover {
   background-color: #7f8c8d !important;
 }
 
-/* Nút Sửa/Xóa trong bảng */
-td button {
-  padding: 6px 12px;
-  min-width: auto;
-  border-radius: 6px;
-  font-size: 12px;
-  margin: 4px;
+/* Nút Lưu/Sửa trạng thái Warning */
+button[type="submit"].btn-warning {
+  background-color: #f39c12;
+}
+button[type="submit"].btn-warning:hover {
+  background-color: #e67e22;
 }
 
-/* 6. SUMMARY & NOTIFICATIONS */
+/* Nút nhỏ trong bảng */
+td button {
+  padding: 6px 12px;
+  font-size: 12px;
+  margin: 4px 2px;
+  border-radius: 6px;
+  background-color: white;
+  box-shadow: none;
+}
+td button:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-edit {
+  color: #2980b9;
+  border-color: #2980b9;
+}
+.btn-edit:hover {
+  background-color: #2980b9;
+  color: white;
+}
+
+.btn-delete {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+.btn-delete:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
+#transactionForm button {
+  width: 80%;
+  margin-top: 10px;
+}
+#filter button {
+  margin: 5px;
+  min-width: 120px;
+}
+
+/* 6. DASHBOARD & TABLE */
 .financial-summary {
   display: flex;
   justify-content: space-between;
@@ -202,61 +274,29 @@ td button {
   text-align: center;
   margin-bottom: 25px;
 }
-.financial-summary .summary-card {
+
+.summary-card {
   background: #f8f9fa;
   padding: 15px;
   border-radius: 8px;
   flex: 1;
 }
-.financial-summary h3 {
-  font-size: 13px;
-  margin: 0 0 8px 0;
-  color: #7f8c8d;
-  text-transform: uppercase;
-}
+
 .value {
   font-size: 18px;
-  font-weight: bold;
-  color: #2c3e50;
   margin: 0;
 }
 
-/* Màu sắc cho số tiền (thay thế inline style) */
-.text-green {
-  color: #27ae60;
-}
-.text-red {
-  color: #e74c3c;
-}
-.text-dark {
-  color: #2c3e50;
-}
-
-#notification,
-#emptyState {
-  min-height: 24px;
-  font-size: 14px;
-  margin-top: 15px;
-  text-align: center;
-  font-weight: 500;
-}
-.success {
-  color: #00cb55;
-}
-.error {
-  color: #dc1600;
-}
-
-/* 7. TABLE STYLES*/
 .table-wrapper {
   overflow-x: auto;
-} /* Class bao ngoài bảng */
+}
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
 }
+
 th,
 td {
   padding: 15px 10px;
@@ -264,26 +304,34 @@ td {
   font-size: 14px;
   border-bottom: 1px solid #eee;
 }
+
 th {
   background-color: #fff;
   color: #7f8c8d;
-  font-weight: 600;
-  text-transform: uppercase;
   font-size: 12px;
+  text-transform: uppercase;
 }
 
 th.sortable {
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
   user-select: none;
+  transition: background-color 0.2s;
 }
-
 th.sortable:hover {
   background-color: #e8f5e9;
   color: #27ae60;
 }
 
-/* 8. MOBILE RESPONSIVE (<768px) */
+/* Dòng thông báo bảng rỗng */
+.empty-row {
+  text-align: center;
+  padding: 30px;
+  color: #95a5a6;
+  font-style: italic;
+  background-color: #fff;
+}
+
+/* 7. RESPONSIVE */
 @media (max-width: 768px) {
   main {
     flex-direction: column;
@@ -297,6 +345,7 @@ th.sortable:hover {
     margin: 0 auto 20px auto;
     position: static;
   }
+
   section {
     padding: 15px;
   }
@@ -305,6 +354,7 @@ th.sortable:hover {
     flex-direction: column;
     gap: 10px;
   }
+
   .summary-card {
     display: flex;
     justify-content: space-between;
@@ -321,6 +371,7 @@ th.sortable:hover {
   td:nth-child(5) {
     display: none;
   }
+
   th,
   td {
     padding: 10px 5px;
@@ -333,12 +384,12 @@ th.sortable:hover {
     white-space: nowrap;
     width: 1%;
   }
+
   td button {
     display: inline-block !important;
     width: auto !important;
     padding: 5px 8px;
     font-size: 11px;
     margin: 0 2px;
-    box-shadow: none;
   }
 }
