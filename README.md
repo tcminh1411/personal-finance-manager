@@ -34,7 +34,7 @@ Dự án này là Frontend thuần, không cần cài đặt Server hay Database
 ## 📅 Lộ trình phát triển
 
 - [x] **Tuần 1:** Hoàn thiện UI/UX và Logic Frontend cơ bản.
-- [ ] **Tuần 2:** Kết nối Database MySQL và Backend PHP.
+- [x] **Tuần 2:** Kết nối Database MySQL và Backend PHP.
 - [ ] **Tuần 3:** Xây dựng API và xử lý bất đồng bộ (AJAX).
 - [ ] **Tuần 4:** Bảo mật, Biểu đồ thống kê và Triển khai thực tế.
 
