@@ -1,226 +1,175 @@
-// 1. CẤU HÌNH & BIẾN TOÀN CỤC
-const STORAGE_KEY = "transactions";
-let isEditing = false;
-let currentEditId = null;
-
-let sortConfig = {
-  key: "date",
-  direction: "desc",
-};
-
-// 2. KHỞI TẠO
 document.addEventListener("DOMContentLoaded", () => {
-  const today = new Date().toISOString().slice(0, 10);
-  document.getElementById("date").value = today;
-  document.getElementById("filter-date").value = "";
-  reloadTable();
+  initApp();
 });
 
-// 3. TỔNG QUẢN
-function reloadTable() {
-  let transactions = loadTransactions();
-  transactions = applyFilter(transactions);
-  transactions = applySort(transactions);
-  renderTable(transactions);
-  updateTotals(transactions);
+function initApp() {
+  setupFormSubmit();
+  setupTableActions();
+
+  // Tự động điền ngày hôm nay nếu input trống
+  const dateInput = document.getElementById("date");
+  if (dateInput && !dateInput.value) {
+    // Lấy ngày hiện tại định dạng YYYY-MM-DD
+    dateInput.value = new Date().toISOString().split("T")[0];
+  }
 }
 
-// Hàm Lọc
-function applyFilter(data) {
-  const filterDate = document.getElementById("filter-date").value;
-  const filterType = document.getElementById("filter-type").value;
-  if (filterDate) data = data.filter((tx) => tx.date === filterDate);
-  if (filterType) data = data.filter((tx) => tx.type === filterType);
-  return data;
-}
-
-// Hàm Sắp xếp
-function applySort(data) {
-  const key = sortConfig.key;
-  const direction = sortConfig.direction;
-
-  return data.sort((a, b) => {
-    let valueA = a[key];
-    let valueB = b[key];
-
-    // Xếp theo số (Tiền)
-    if (key === "amount") {
-      return direction === "asc" ? valueA - valueB : valueB - valueA;
-    }
-
-    // Xếp theo chữ (Ngày, Loại, Mô tả)
-    if (typeof valueA === "string") {
-      return direction === "asc"
-        ? valueA.localeCompare(valueB)
-        : valueB.localeCompare(valueA);
-    }
-    return 0;
-  });
-}
-
-// 4. MODEL & VIEW (Lưu, Đọc, Vẽ)
-function loadTransactions() {
-  const data = localStorage.getItem(STORAGE_KEY);
-  return data ? JSON.parse(data) : [];
-}
-
-function saveTransactions(transactions) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
-}
-
+// Hàm hiển thị thông báo
 function showNotification(message, type = "success") {
   const notifyBox = document.getElementById("notification");
+  if (!notifyBox) return;
+
   notifyBox.textContent = message;
   notifyBox.className = type;
+
   setTimeout(() => {
     notifyBox.textContent = "";
     notifyBox.className = "";
   }, 3000);
 }
 
-function updateTotals(transactions) {
-  let income = 0,
-    expense = 0;
-  transactions.forEach((tx) => {
-    if (tx.type === "income") income += tx.amount;
-    else expense += tx.amount;
+// 1. XỬ LÝ SUBMIT FORM
+function setupFormSubmit() {
+  const form = document.getElementById("transactionForm");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const btnSubmit = form.querySelector("button[type='submit']");
+    const originalText = btnSubmit.textContent;
+    btnSubmit.textContent = "⏳ Đang xử lý...";
+    btnSubmit.disabled = true;
+
+    try {
+      const id = document.getElementById("transaction_id").value;
+
+      const formData = new FormData();
+
+      const rawAmount = document.getElementById("amount").value;
+      const cleanAmount = rawAmount.replace(/[^\d]/g, "");
+
+      formData.append("amount", cleanAmount);
+      formData.append("type", document.getElementById("type").value);
+      formData.append(
+        "description",
+        document.getElementById("description").value
+      );
+      formData.append("date", document.getElementById("date").value);
+
+      if (id) {
+        formData.append("id", id);
+      }
+
+      // Gọi API
+      const url = id
+        ? "api/transactions/update.php"
+        : "api/transactions/save.php";
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        showNotification(data.message, "success");
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } else {
+        showNotification("Lỗi: " + data.message, "error");
+        btnSubmit.textContent = originalText;
+        btnSubmit.disabled = false;
+      }
+    } catch (error) {
+      console.error("Lỗi submit form:", error);
+      showNotification("Có lỗi kết nối server!", "error");
+      btnSubmit.textContent = originalText;
+      btnSubmit.disabled = false;
+    }
   });
-  const fmt = (n) => n.toLocaleString("vi-VN") + " Đ";
-  document.getElementById("total-income").textContent = fmt(income);
-  document.getElementById("total-expense").textContent = fmt(expense);
-  document.getElementById("balance").textContent = fmt(income - expense);
 }
 
-function renderTable(transactions) {
-  const tbody = document.getElementById("txTableBody");
-  const emptyState = document.getElementById("emptyState");
-  tbody.innerHTML = "";
+// 2. XỬ LÝ CÁC NÚT TRONG BẢNG
+function setupTableActions() {
+  const tableBody = document.getElementById("txTableBody");
+  if (!tableBody) return;
 
-  if (transactions.length === 0) {
-    emptyState.style.display = "block";
-    return;
-  } else {
-    emptyState.style.display = "none";
-  }
+  tableBody.addEventListener("click", (e) => {
+    const btnDelete = e.target.closest(".btn-delete");
+    const btnEdit = e.target.closest(".btn-edit");
 
-  transactions.forEach((tx, index) => {
-    const row = document.createElement("tr");
-    const typeClass = tx.type === "income" ? "success" : "error";
-    const typeLabel = tx.type === "income" ? "Thu" : "Chi";
+    if (btnDelete) {
+      const id = btnDelete.dataset.id;
+      handleDelete(id);
+    }
 
-    row.innerHTML = `
-            <td>${index + 1}</td> <td>${tx.date}</td>
-            <td class="${typeClass}" style="font-weight:bold">${typeLabel}</td>
-            <td>${tx.amount.toLocaleString("vi-VN")} Đ</td>
-            <td>${tx.description}</td>
-            <td>
-                <button class="btn-edit" data-id="${tx.id}">Sửa</button>
-                <button class="btn-delete" data-id="${
-                  tx.id
-                }" style="color:red">Xóa</button>
-            </td>
-        `;
-    tbody.appendChild(row);
+    if (btnEdit) {
+      const id = btnEdit.dataset.id;
+      const row = btnEdit.closest("tr");
+      fillFormForEdit(id, row);
+    }
   });
 }
 
-// 5. CONTROLLER (Sự kiện)
+async function handleDelete(id) {
+  if (!confirm("Bạn có chắc chắn muốn xóa không?")) return;
 
-document.querySelectorAll("th.sortable").forEach((header) => {
-  header.addEventListener("click", () => {
-    const key = header.dataset.key;
-    if (sortConfig.key === key) {
-      sortConfig.direction = sortConfig.direction === "asc" ? "desc" : "asc";
-    } else {
-      sortConfig.key = key;
-      sortConfig.direction = "asc";
-    }
-    reloadTable();
-  });
-});
+  try {
+    const formData = new FormData();
+    formData.append("id", id);
 
-// Submit Form
-const form = document.getElementById("transactionForm");
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const amount = document.getElementById("amount").value;
-  const type = document.getElementById("type").value;
-  const desc = document.getElementById("description").value;
-  const date = document.getElementById("date").value;
-
-  if (Number(amount) <= 0)
-    return showNotification("Số tiền phải lớn hơn 0", "error");
-  if (!type) return showNotification("Hãy chọn loại", "error");
-  if (!desc.trim()) return showNotification("Hãy nhập mô tả", "error");
-
-  const transactions = loadTransactions();
-
-  if (isEditing) {
-    const index = transactions.findIndex((t) => t.id === currentEditId);
-    if (index !== -1) {
-      transactions[index] = {
-        id: currentEditId,
-        date,
-        amount: Number(amount),
-        type,
-        description: desc,
-      };
-      showNotification("Cập nhật thành công!");
-      isEditing = false;
-      currentEditId = null;
-      document.querySelector("#transactionForm button").textContent = "ADD";
-    }
-  } else {
-    transactions.push({
-      id: Date.now(),
-      date,
-      amount: Number(amount),
-      type,
-      description: desc,
+    const response = await fetch("api/transactions/delete.php", {
+      method: "POST",
+      body: formData,
     });
-    showNotification("Thêm mới thành công!");
-  }
 
-  saveTransactions(transactions);
-  reloadTable();
-  form.reset();
-  document.getElementById("date").value = new Date().toISOString().slice(0, 10);
-});
+    const data = await response.json();
 
-// Filter & Reset
-document.getElementById("btnFilter").addEventListener("click", reloadTable);
-document.getElementById("btnReset").addEventListener("click", () => {
-  document.getElementById("filter-date").value = "";
-  document.getElementById("filter-type").value = "";
-  reloadTable();
-});
-
-// Edit & Delete
-document.getElementById("txTableBody").addEventListener("click", (e) => {
-  if (e.target.classList.contains("btn-delete")) {
-    if (confirm("Xóa giao dịch này?")) {
-      const id = Number(e.target.dataset.id);
-      const transactions = loadTransactions();
-      const newTransactions = transactions.filter((tx) => tx.id !== id);
-      saveTransactions(newTransactions);
-      reloadTable();
-      showNotification("Đã xóa!");
+    if (data.success) {
+      window.location.reload();
+    } else {
+      alert("Lỗi xóa: " + data.message);
     }
+  } catch (error) {
+    console.error("Lỗi xóa giao dịch:", error);
+    alert("Lỗi kết nối server");
   }
-  if (e.target.classList.contains("btn-edit")) {
-    const id = Number(e.target.dataset.id);
-    const transactions = loadTransactions();
-    const tx = transactions.find((t) => t.id === id);
-    if (tx) {
-      document.getElementById("amount").value = tx.amount;
-      document.getElementById("type").value = tx.type;
-      document.getElementById("description").value = tx.description;
-      document.getElementById("date").value = tx.date;
-      isEditing = true;
-      currentEditId = id;
-      document.querySelector("#transactionForm button").textContent =
-        "Cập nhật";
-      document.getElementById("addForm").scrollIntoView({ behavior: "smooth" });
-    }
+}
+
+function fillFormForEdit(id, row) {
+  const cells = row.cells;
+  const dateRaw = cells[1].innerText.trim();
+  const typeText = cells[2].innerText.trim();
+  const amountRaw = cells[3].innerText.trim();
+  const description = cells[4].innerText.trim();
+
+  document.getElementById("transaction_id").value = id;
+  document.getElementById("amount").value = parseMoney(amountRaw);
+  const isIncome = typeText.includes("Thu") || typeText.includes("income");
+  document.getElementById("type").value = isIncome ? "income" : "expense";
+  document.getElementById("description").value = description;
+  document.getElementById("date").value = convertDateToISO(dateRaw);
+
+  const btnSubmit = document.querySelector(
+    "#transactionForm button[type='submit']"
+  );
+  btnSubmit.innerHTML = "💾 Cập nhật";
+  btnSubmit.style.backgroundColor = "#f39c12";
+
+  document.getElementById("addForm").scrollIntoView({ behavior: "smooth" });
+}
+
+function parseMoney(str) {
+  return str.replace(/[^\d]/g, "");
+}
+
+function convertDateToISO(dateStr) {
+  const parts = dateStr.split("/");
+  if (parts.length === 3) {
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
   }
-});
+  return "";
+}
