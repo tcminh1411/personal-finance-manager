@@ -1,0 +1,180 @@
+/**
+ * Component Styles
+ * UI Elements: Forms, Inputs, and Buttons
+ */
+
+/* --- 1. Form Containers & Labels --- */
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-heading, #34495e);
+  font-size: 14px;
+}
+
+.date-help {
+  display: block;
+  margin-top: 4px;
+  color: #7f8c8d;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+/* --- 2. Shared Input & Select Styles --- */
+input,
+select,
+input[type="date"] {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 14px;
+  background-color: #f9fafb;
+  border: 1px solid #e1e4e8;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  appearance: none; /* Reset default browser styling */
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  background-color: #fff;
+  border-color: var(--color-green, #2ecc71);
+}
+
+/* Validation States (Applied via JS 'touched' class) */
+input.touched:invalid,
+select.touched:invalid {
+  border-color: var(--color-red, #e74c3c);
+  background-color: #fff5f5;
+}
+
+input.touched:valid:not(:placeholder-shown),
+select.touched:valid:not([value=""]) {
+  border-color: var(--color-green, #27ae60);
+}
+
+/* Clear default number input arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* --- 3. Buttons: Base & Variants --- */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-size: 14px;
+  color: white;
+  background-color: var(--color-green, #2ecc71);
+  border: 1px solid transparent;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 204, 113, 0.2);
+}
+
+button:disabled {
+  background-color: #95a5a6 !important;
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Variant: Reset/Secondary */
+.btn-reset {
+  background-color: #95a5a6 !important;
+}
+
+.btn-reset:hover {
+  background-color: #7f8c8d !important;
+}
+
+/* Variant: Warning */
+button.btn-warning {
+  background-color: #f39c12 !important;
+}
+
+button.btn-warning:hover {
+  background-color: #e67e22 !important;
+  box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
+}
+
+/* --- 4. Context-Specific Buttons --- */
+
+/* Form Main Action */
+#transactionForm button {
+  display: block;
+  width: auto;
+  min-width: 200px;
+  margin: 15px auto 0;
+}
+
+/* Data Table Actions */
+td button {
+  padding: 6px 12px;
+  margin: 4px 2px;
+  font-size: 12px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+td button:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-edit {
+  color: #2980b9;
+  border-color: #2980b9;
+}
+
+.btn-edit:hover {
+  color: white;
+  background-color: #2980b9;
+}
+
+.btn-delete {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.btn-delete:hover {
+  color: white;
+  background-color: #e74c3c;
+}
+
+/* --- 5. Interactions & Animations --- */
+
+/* Flash effect for auto-filled selections */
+select.auto-filled {
+  animation: flash-success 0.5s ease;
+  border-color: #2ecc71 !important;
+}
+
+@keyframes flash-success {
+  0%,
+  100% {
+    background-color: #f9fafb;
+  }
+  50% {
+    background-color: #d4edda;
+  }
+}

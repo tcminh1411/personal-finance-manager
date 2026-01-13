@@ -1,0 +1,77 @@
+/**
+ * Table Styles
+ * Data grid layout, sorting indicators, and empty states
+ */
+
+/* --- 1. Container & Base Table --- */
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 15px 10px;
+  font-size: 14px;
+  text-align: center;
+  border-bottom: 1px solid #eeeeee;
+}
+
+/* --- 2. Header Styling --- */
+th {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7f8c8d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #ffffff;
+}
+
+/* --- 3. Column Sorting (Interactions) --- */
+th.sortable {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+th.sortable:hover {
+  color: #27ae60;
+  background-color: #e8f5e9;
+}
+
+/* Sorting State Icons */
+th.sortable::after {
+  content: " ↕";
+  opacity: 0.3;
+  margin-left: 5px;
+}
+
+th.sortable.sort-asc::after {
+  content: " ↑";
+  color: #27ae60;
+  opacity: 1;
+}
+
+th.sortable.sort-desc::after {
+  content: " ↓";
+  color: #27ae60;
+  opacity: 1;
+}
+
+/* --- 4. Data States --- */
+
+/* Displayed when no records are found */
+.empty-row {
+  padding: 40px;
+  font-style: italic;
+  color: #95a5a6;
+  text-align: center;
+  background-color: #ffffff;
+}

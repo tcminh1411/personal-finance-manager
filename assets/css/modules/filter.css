@@ -1,0 +1,147 @@
+/**
+ * Filter Section Styles
+ * Handles Search, Date Range, and Filter UI components
+ */
+
+/* --- 1. Filter Container --- */
+#filter {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#filter h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* --- 2. Layout Structure --- */
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+/* Flexible columns for inputs and selects */
+.filter-col {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* Full-width search input wrapper */
+.filter-col-full {
+  flex: 1;
+  width: 100%;
+}
+
+/* --- 3. Preset Date Range Buttons --- */
+.date-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.btn-shortcut {
+  padding: 10px 20px;
+  font-size: 13px;
+  color: #34495e;
+  background-color: #ecf0f1;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-shortcut:hover {
+  color: white;
+  background-color: #3498db;
+  transform: translateY(-1px);
+}
+
+/* --- 4. Main Action Buttons --- */
+.filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.filter-actions .btn {
+  min-width: 120px;
+  margin: 0;
+}
+
+/* --- 5. Status & Feedback Messages --- */
+.filter-result-box {
+  margin-top: 25px;
+  text-align: center;
+}
+
+#filter-info,
+#export-message {
+  display: inline-block;
+  margin: 5px 0;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* Hide message containers when no content is present */
+#filter-info:empty,
+#export-message:empty {
+  display: none;
+}
+
+/* Message States */
+#filter-info.success,
+#export-message.success {
+  color: #27ae60;
+}
+#filter-info.error,
+#export-message.error {
+  color: #e74c3c;
+}
+#filter-info.empty {
+  color: #f39c12;
+}
+
+#filter-info strong,
+#export-message strong {
+  color: inherit;
+  font-weight: 700;
+}
+
+/* --- 6. Loading State & Animation --- */
+.btn-filter.loading {
+  position: relative;
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.btn-filter.loading .loading-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Disable hover effects while loading */
+.btn-filter.loading:hover {
+  transform: none;
+  box-shadow: none;
+}

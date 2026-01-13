@@ -1,45 +1,109 @@
 <?php
+/**
+ * API Endpoint: Update Transaction
+ * Handles modification of existing records with full validation.
+ */
+
 header('Content-Type: application/json');
-
 require_once '../../config/database.php';
+require_once '../../includes/helpers.php';
 
+// 1. Validate Method
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Method Not Allowed']);
     exit;
 }
 
+/**
+ * Controller: Transaction Update Process
+ */
 try {
+    // A. Extract & Sanitize Input
     $id = $_POST['id'] ?? null;
     $amount = $_POST['amount'] ?? 0;
     $type = $_POST['type'] ?? '';
-    $description = $_POST['description'] ?? '';
-    $date = $_POST['date'] ?? date('Y-m-d');
+    $description = trim($_POST['description'] ?? '');
+    $date = $_POST['date'] ?? getTodayISO();
+    $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
 
+    // B. Identification Validation
     if (!$id) {
         throw new InvalidArgumentException("Thiếu ID giao dịch");
     }
-    if ($amount <= 0) {
-        throw new InvalidArgumentException("Số tiền không hợp lệ");
+
+    // C. Data Validation Logic
+    $errors = [];
+
+    // C1. Amount Validation
+    $amountVal = validateAmount($amount);
+    if (!$amountVal['valid']) {
+        $errors[] = $amountVal['error'];
+    } else {
+        $amount = $amountVal['value'];
     }
 
-    // Update
+    // C2. Type & Category Integrity
+    $typeVal = validateType($type);
+    if (!$typeVal['valid']) {
+        $errors[] = $typeVal['error'];
+    }
+
+    $catVal = validateCategory($pdo, $category_id, $type);
+    if (!$catVal['valid']) {
+        $errors[] = $catVal['error'];
+    }
+
+    // C3. Content & Date Validation
+    $descVal = validateDescription($description);
+    if (!$descVal['valid']) {
+        $errors[] = $descVal['error'];
+    } else {
+        $description = $descVal['value'];
+    }
+
+    $dateVal = validateDate($date);
+    if (!$dateVal['valid']) {
+        $errors[] = $dateVal['error'];
+    }
+
+    // D. Handle Validation Failures
+    if (!empty($errors)) {
+        throw new InvalidArgumentException(implode(', ', $errors));
+    }
+
+    // E. Database Update Execution
     $sql = "UPDATE transactions
-            SET amount = :amount, type = :type, description = :description, transaction_date = :date
+            SET amount = :amount,
+                type = :type,
+                description = :description,
+                transaction_date = :date,
+                category_id = :category_id
             WHERE id = :id";
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         ':id' => $id,
         ':amount' => $amount,
         ':type' => $type,
         ':description' => $description,
-        ':date' => $date
+        ':date' => $date,
+        ':category_id' => $category_id
     ]);
 
-    echo json_encode(['success' => true, 'message' => 'Cập nhật thành công!']);
+    // F. Success Response
+    echo json_encode([
+        'success' => true,
+        'message' => 'Cập nhật giao dịch thành công!'
+    ]);
 
-} catch (Exception $e) {
+} catch (Throwable $e) {
+    // Error Logging & Handling
+    error_log("Transaction Update Error: " . $e->getMessage());
+
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo json_encode([
+        'success' => false,
+        'message' => $e->getMessage()
+    ]);
 }
-

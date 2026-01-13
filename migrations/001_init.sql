@@ -50,3 +50,25 @@ INSERT INTO categories (name, type) VALUES
 INSERT INTO transactions (user_id, category_id, amount, type, description, transaction_date) VALUES
 (1, 1, 15000000, 'income', 'Nhận lương tháng này', CURDATE()),
 (1, 4, 50000, 'expense', 'Ăn sáng phở bò', CURDATE());
+
+-- Indexes for transactions table
+CREATE INDEX idx_transactions_date ON transactions(transaction_date);
+CREATE INDEX idx_transactions_type ON transactions(type);
+CREATE INDEX idx_transactions_category ON transactions(category_id);
+CREATE INDEX idx_transactions_created ON transactions(created_at);
+
+-- Composite index for common filter combinations
+CREATE INDEX idx_transactions_filter ON transactions(transaction_date, type, category_id);
+
+-- Index for categories table
+CREATE INDEX idx_categories_type ON categories(type);
+
+-- ============================================
+-- OPTIONAL: Add foreign key constraint if not exists
+-- ============================================
+ALTER TABLE transactions 
+ADD CONSTRAINT fk_transactions_category 
+FOREIGN KEY (category_id) 
+REFERENCES categories(id) 
+ON DELETE SET NULL 
+ON UPDATE CASCADE;

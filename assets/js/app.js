@@ -1,175 +1,77 @@
+/**
+ * Personal Finance Manager - Main Entry Point
+ * Author: [Your Name]
+ * Description: Modular architecture for better maintainability
+ */
+
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
 });
 
 function initApp() {
-  setupFormSubmit();
-  setupTableActions();
+  // 1. Form & CRUD
+  if (typeof FormHandler !== "undefined") {
+    FormHandler.init();
+  }
 
-  // Tự động điền ngày hôm nay nếu input trống
+  // 2. Table Operations
+  if (typeof TableHandler !== "undefined") {
+    TableHandler.init();
+  }
+
+  // 3. Pagination (must be before Filter)
+  if (typeof PaginationHandler !== "undefined") {
+    PaginationHandler.init();
+  }
+
+  // 4. Filter & Search
+  if (typeof FilterHandler !== "undefined") {
+    FilterHandler.init();
+  }
+
+  // 5. Validation
+  if (typeof Validation !== "undefined") {
+    Validation.init();
+  }
+
+  // 6. Export CSV
+  if (typeof ExportHandler !== "undefined") {
+    ExportHandler.init();
+  }
+
+  // 7. Charts (if available)
+  if (typeof ChartHandler !== "undefined") {
+    ChartHandler.init();
+  }
+
+  // ===== FIX: Set default date to today (MUST BE LAST) =====
+  setDefaultDate();
+}
+
+/**
+ * Set default date to today for main form
+ * Separate function to ensure it runs after all modules loaded
+ */
+function setDefaultDate() {
   const dateInput = document.getElementById("date");
-  if (dateInput && !dateInput.value) {
-    // Lấy ngày hiện tại định dạng YYYY-MM-DD
-    dateInput.value = new Date().toISOString().split("T")[0];
-  }
-}
 
-// Hàm hiển thị thông báo
-function showNotification(message, type = "success") {
-  const notifyBox = document.getElementById("notification");
-  if (!notifyBox) return;
+  if (!dateInput) return;
 
-  notifyBox.textContent = message;
-  notifyBox.className = type;
-
-  setTimeout(() => {
-    notifyBox.textContent = "";
-    notifyBox.className = "";
-  }, 3000);
-}
-
-// 1. XỬ LÝ SUBMIT FORM
-function setupFormSubmit() {
-  const form = document.getElementById("transactionForm");
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const btnSubmit = form.querySelector("button[type='submit']");
-    const originalText = btnSubmit.textContent;
-    btnSubmit.textContent = "⏳ Đang xử lý...";
-    btnSubmit.disabled = true;
-
-    try {
-      const id = document.getElementById("transaction_id").value;
-
-      const formData = new FormData();
-
-      const rawAmount = document.getElementById("amount").value;
-      const cleanAmount = rawAmount.replace(/[^\d]/g, "");
-
-      formData.append("amount", cleanAmount);
-      formData.append("type", document.getElementById("type").value);
-      formData.append(
-        "description",
-        document.getElementById("description").value
-      );
-      formData.append("date", document.getElementById("date").value);
-
-      if (id) {
-        formData.append("id", id);
-      }
-
-      // Gọi API
-      const url = id
-        ? "api/transactions/update.php"
-        : "api/transactions/save.php";
-      const response = await fetch(url, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        showNotification(data.message, "success");
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
-      } else {
-        showNotification("Lỗi: " + data.message, "error");
-        btnSubmit.textContent = originalText;
-        btnSubmit.disabled = false;
-      }
-    } catch (error) {
-      console.error("Lỗi submit form:", error);
-      showNotification("Có lỗi kết nối server!", "error");
-      btnSubmit.textContent = originalText;
-      btnSubmit.disabled = false;
-    }
-  });
-}
-
-// 2. XỬ LÝ CÁC NÚT TRONG BẢNG
-function setupTableActions() {
-  const tableBody = document.getElementById("txTableBody");
-  if (!tableBody) return;
-
-  tableBody.addEventListener("click", (e) => {
-    const btnDelete = e.target.closest(".btn-delete");
-    const btnEdit = e.target.closest(".btn-edit");
-
-    if (btnDelete) {
-      const id = btnDelete.dataset.id;
-      handleDelete(id);
-    }
-
-    if (btnEdit) {
-      const id = btnEdit.dataset.id;
-      const row = btnEdit.closest("tr");
-      fillFormForEdit(id, row);
-    }
-  });
-}
-
-async function handleDelete(id) {
-  if (!confirm("Bạn có chắc chắn muốn xóa không?")) return;
-
-  try {
-    const formData = new FormData();
-    formData.append("id", id);
-
-    const response = await fetch("api/transactions/delete.php", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      window.location.reload();
+  // Only set if empty
+  if (!dateInput.value || dateInput.value === "") {
+    if (
+      typeof Utils !== "undefined" &&
+      typeof Utils.getTodayISO === "function"
+    ) {
+      const today = Utils.getTodayISO();
+      dateInput.value = today;
     } else {
-      alert("Lỗi xóa: " + data.message);
+      // Fallback if Utils not loaded
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      dateInput.value = `${year}-${month}-${day}`;
     }
-  } catch (error) {
-    console.error("Lỗi xóa giao dịch:", error);
-    alert("Lỗi kết nối server");
   }
-}
-
-function fillFormForEdit(id, row) {
-  const cells = row.cells;
-  const dateRaw = cells[1].innerText.trim();
-  const typeText = cells[2].innerText.trim();
-  const amountRaw = cells[3].innerText.trim();
-  const description = cells[4].innerText.trim();
-
-  document.getElementById("transaction_id").value = id;
-  document.getElementById("amount").value = parseMoney(amountRaw);
-  const isIncome = typeText.includes("Thu") || typeText.includes("income");
-  document.getElementById("type").value = isIncome ? "income" : "expense";
-  document.getElementById("description").value = description;
-  document.getElementById("date").value = convertDateToISO(dateRaw);
-
-  const btnSubmit = document.querySelector(
-    "#transactionForm button[type='submit']"
-  );
-  btnSubmit.innerHTML = "💾 Cập nhật";
-  btnSubmit.style.backgroundColor = "#f39c12";
-
-  document.getElementById("addForm").scrollIntoView({ behavior: "smooth" });
-}
-
-function parseMoney(str) {
-  return str.replace(/[^\d]/g, "");
-}
-
-function convertDateToISO(dateStr) {
-  const parts = dateStr.split("/");
-  if (parts.length === 3) {
-    return `${parts[2]}-${parts[1]}-${parts[0]}`;
-  }
-  return "";
 }

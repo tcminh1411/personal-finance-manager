@@ -11,3 +11,7 @@ error_log
 # 3. File nháp
 test_api.php
 test_db.php
+
+# 4. File gộp code
+personal-finance-manager-output.md
+personal-finance-manager-output.txt

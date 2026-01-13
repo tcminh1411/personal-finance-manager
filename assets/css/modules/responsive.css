@@ -1,0 +1,253 @@
+/**
+ * Responsive Styles
+ * Breakpoints for Tablet, Mobile, and Small Handheld devices
+ */
+
+/* ============================================================
+   1. Tablet & Large Mobile (Max-width: 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Layout: Stack sections vertically */
+  main {
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+  }
+
+  section {
+    padding: 18px;
+  }
+
+  /* Form: Remove sticky positioning and reset width */
+  #addForm {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto 20px;
+  }
+
+  /* Financial Summary: Force single-row with text truncation */
+  .financial-summary {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .summary-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0; /* Prevents flex children from breaking parent width */
+    padding: 12px 8px;
+    text-align: center;
+  }
+
+  .summary-card h3,
+  .value {
+    width: 100%;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .value {
+    font-size: 14px;
+  }
+
+  /* Controls: Stack filter rows */
+  .filter-row {
+    flex-direction: column;
+  }
+
+  .filter-col {
+    min-width: 100%;
+  }
+
+  /* Horizontal action bars (Shortcuts & Filter buttons) */
+  .date-shortcuts,
+  .filter-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin: 15px 0;
+    overflow: hidden;
+  }
+
+  .btn-shortcut,
+  .btn-filter,
+  .btn-export,
+  #btnReset {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Table: Enable horizontal scroll with sticky action column */
+  .table-wrapper {
+    overflow-x: auto;
+    margin: 0 -15px;
+    padding: 0 15px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hide secondary columns to save space */
+  th:nth-child(1), td:nth-child(1), /* # Index */
+  th:nth-child(4), td:nth-child(4)  /* Category */ {
+    display: none;
+  }
+
+  th,
+  td {
+    padding: 10px 6px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  th:last-child,
+  td:last-child {
+    position: sticky;
+    right: 0;
+    z-index: 1;
+    min-width: 90px;
+    background: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  td button {
+    min-width: 55px;
+    margin: 0 2px;
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+
+  /* Pagination: Stack settings vertically */
+  #pagination {
+    padding: 15px;
+    margin: 15px 0;
+  }
+
+  .pagination-settings {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .per-page-selector {
+    justify-content: center;
+  }
+
+  #pagination-info {
+    min-width: auto;
+    font-size: 13px;
+    white-space: normal;
+  }
+
+  #pagination-controls {
+    gap: 4px;
+  }
+
+  #pagination-controls button {
+    min-width: 32px;
+    height: 32px;
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+}
+
+/* ============================================================
+   2. Small Mobile (Max-width: 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  main {
+    padding: 10px;
+  }
+  section {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+  h3 {
+    font-size: 1rem;
+  }
+
+  /* Compact metrics */
+  .summary-card h3 {
+    font-size: 12px;
+  }
+  .value {
+    font-size: 13px;
+  }
+
+  /* Full-width form actions */
+  #transactionForm button[type="submit"] {
+    width: 100%;
+    min-width: auto;
+  }
+
+  /* Reduce font sizes for status messages and tables */
+  #filter-info,
+  #export-message {
+    font-size: 13px;
+  }
+
+  th,
+  td {
+    font-size: 12px;
+  }
+
+  #pagination-controls button {
+    min-width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+}
+
+/* ============================================================
+   3. Micro Viewports (Max-width: 360px)
+   ============================================================ */
+@media (max-width: 360px) {
+  /* Wrap action buttons into two columns */
+  .date-shortcuts,
+  .filter-actions {
+    flex-wrap: wrap;
+  }
+
+  .btn-shortcut,
+  .btn-filter,
+  .btn-export,
+  #btnReset {
+    flex: 1 1 calc(50% - 4px);
+  }
+
+  /* Aggressive column hiding for micro screens */
+  th:nth-child(3), 
+  td:nth-child(3) /* Type Column */ {
+    display: none;
+  }
+
+  th:last-child,
+  td:last-child {
+    width: 85px;
+  }
+
+  #pagination-controls button {
+    min-width: 25px;
+    height: 25px;
+    font-size: 10px;
+  }
+}

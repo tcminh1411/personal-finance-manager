@@ -1,0 +1,161 @@
+/**
+ * Pagination Styles
+ * Controls for page navigation and row-limit selection
+ */
+
+/* --- 1. Main Container --- */
+#pagination {
+  margin: 25px 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+}
+
+/* --- 2. Settings & Row Selection --- */
+.pagination-settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.per-page-selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.per-page-selector label {
+  margin: 0;
+  font-size: 14px;
+  color: #34495e;
+  white-space: nowrap;
+}
+
+#per-page-select {
+  width: auto;
+  min-width: 100px;
+  padding: 8px 12px;
+  font-size: 14px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#per-page-select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+/* --- 3. Pagination Status Display --- */
+#pagination-info {
+  min-width: 200px;
+  padding: 8px 12px;
+  font-size: 14px;
+  text-align: center;
+  color: #7f8c8d;
+  background-color: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+}
+
+#pagination-info strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* --- 4. Navigation Controls & Buttons --- */
+#pagination-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+#pagination-controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #34495e;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Button Hover State */
+#pagination-controls button:hover:not(:disabled):not(.active) {
+  color: #3498db;
+  background-color: #f8f9fa;
+  border-color: #3498db;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(52, 152, 219, 0.2);
+}
+
+/* Button Disabled State */
+#pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #ecf0f1;
+  transform: none;
+}
+
+/* Active Page State */
+#pagination-controls button.active {
+  color: white;
+  font-weight: 600;
+  background-color: #2ecc71;
+  border-color: #2ecc71;
+  box-shadow: 0 2px 5px rgba(46, 204, 113, 0.3);
+}
+
+#pagination-controls button.active:hover {
+  background-color: #27ae60;
+  border-color: #27ae60;
+  transform: translateY(-2px);
+}
+
+/* Navigation button specific widths */
+.btn-prev,
+.btn-next {
+  min-width: 60px !important;
+  font-weight: bold;
+}
+
+.btn-page {
+  width: 40px !important;
+  padding: 0 !important;
+}
+
+/* --- 5. Loading State & Animation --- */
+#pagination-controls.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+#pagination-controls.loading::after {
+  content: "⏳";
+  display: inline-block;
+  margin-left: 10px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
