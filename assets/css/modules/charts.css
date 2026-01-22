@@ -1,0 +1,81 @@
+/**
+ * Charts Section Styles
+ * Styling for Chart.js visualizations
+ * Responsive styles are in responsive.css
+ */
+
+/* Charts Container */
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Individual Chart Card */
+.chart-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 25px;
+  border-radius: 15px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.chart-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.chart-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Chart Wrapper - Fixed height for canvas */
+.chart-wrapper {
+  position: relative;
+  height: 300px;
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.chart-wrapper canvas {
+  max-height: 100%;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Chart Description */
+.chart-description {
+  font-size: 13px;
+  color: #7f8c8d;
+  text-align: center;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Empty State */
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: #95a5a6;
+  font-size: 14px;
+  font-style: italic;
+}

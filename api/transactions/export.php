@@ -5,128 +5,145 @@
  */
 
 date_default_timezone_set('Asia/Ho_Chi_Minh');
+
+// Start session to get user_id
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['logged_in']) || !isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    die('Unauthorized');
+}
+
 require_once '../../config/database.php';
 require_once '../../includes/helpers.php';
 
-// 1. Validate Request
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
     die('Method Not Allowed');
 }
 
 try {
-    // 2. Extract and Sanitize Filters
-    $filters = [
-        'type' => $_GET['type'] ?? null,
-        'category_id' => $_GET['category_id'] ?? null,
-        'search' => $_GET['search'] ?? null,
-        'date_from' => $_GET['date_from'] ?? null,
-        'date_to' => $_GET['date_to'] ?? null,
-    ];
+    // Get current user ID
+    $current_user_id = $_SESSION['user_id'];
 
-    // 3. Construct Dynamic Query
+    // Get filter parameters
+    $type = $_GET['type'] ?? null;
+    $category_id = $_GET['category_id'] ?? null;
+    $search = $_GET['search'] ?? null;
+    $date_from = $_GET['date_from'] ?? null;
+    $date_to = $_GET['date_to'] ?? null;
+
+    // Build SQL query with USER FILTER
     $sql = "SELECT t.*, c.name as category_name
             FROM transactions t
             LEFT JOIN categories c ON t.category_id = c.id
-            WHERE 1=1";
+            WHERE t.user_id = :user_id";
 
-    $params = [];
+    $params = [':user_id' => $current_user_id];
 
-    if ($filters['type'] && in_array($filters['type'], ['income', 'expense'])) {
+    // Filter by transaction type
+    if ($type && in_array($type, ['income', 'expense'])) {
         $sql .= " AND t.type = :type";
-        $params[':type'] = $filters['type'];
+        $params[':type'] = $type;
     }
 
-    if ($filters['category_id']) {
+    // Filter by category
+    if ($category_id) {
         $sql .= " AND t.category_id = :category_id";
-        $params[':category_id'] = $filters['category_id'];
+        $params[':category_id'] = $category_id;
     }
 
-    if ($filters['search']) {
+    // Filter by search keyword
+    if ($search) {
         $sql .= " AND t.description LIKE :search";
-        $params[':search'] = '%' . $filters['search'] . '%';
+        $params[':search'] = '%' . $search . '%';
     }
 
-    if ($filters['date_from']) {
+    // Filter by date range
+    if ($date_from) {
         $sql .= " AND t.transaction_date >= :date_from";
-        $params[':date_from'] = $filters['date_from'];
+        $params[':date_from'] = $date_from;
     }
 
-    if ($filters['date_to']) {
+    if ($date_to) {
         $sql .= " AND t.transaction_date <= :date_to";
-        $params[':date_to'] = $filters['date_to'];
+        $params[':date_to'] = $date_to;
     }
 
+    // Default sorting
     $sql .= " ORDER BY t.transaction_date DESC, t.id DESC";
 
+    // Execute query
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
+    $transactions = $stmt->fetchAll();
 
-    // Use FETCH_ASSOC for clean memory management
-    $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // 4. Calculate Financial Summary
-    $summary = [
-        'income' => 0,
-        'expense' => 0,
-        'count' => count($transactions)
-    ];
+    // Calculate summary
+    $totalIncome = 0;
+    $totalExpense = 0;
 
     foreach ($transactions as $tx) {
         if ($tx['type'] === 'income') {
-            $summary['income'] += $tx['amount'];
+            $totalIncome += $tx['amount'];
         } else {
-            $summary['expense'] += $tx['amount'];
+            $totalExpense += $tx['amount'];
         }
     }
-    $balance = $summary['income'] - $summary['expense'];
 
-    // 5. Prepare Streamed Output
+    $balance = $totalIncome - $totalExpense;
+
+    // Generate CSV file
     if (ob_get_level()) {
         ob_end_clean();
     }
 
-    $filename = "transactions_export_" . date('Y-m-d_H-i') . ".csv";
-
+    // Set download headers
     header('Content-Type: text/csv; charset=utf-8');
-    header("Content-Disposition: attachment; filename=\"$filename\"");
+    header('Content-Disposition: attachment; filename="giao-dich-' . date('Y-m-d_His') . '.csv"');
     header('Pragma: no-cache');
     header('Expires: 0');
 
     $output = fopen('php://output', 'w');
 
-    // Add UTF-8 BOM for automatic Excel recognition of special characters
+    // Add UTF-8 BOM for Excel support
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-    // 6. Write CSV Content
-    fputcsv($output, ['--- FINANCIAL SUMMARY ---']);
-    fputcsv($output, ['Total Income', number_format($summary['income'], 0, ',', '.') . ' VND']);
-    fputcsv($output, ['Total Expense', number_format($summary['expense'], 0, ',', '.') . ' VND']);
-    fputcsv($output, ['Current Balance', number_format($balance, 0, ',', '.') . ' VND']);
-    fputcsv($output, ['Record Count', $summary['count']]);
-    fputcsv($output, ['Export Date', date('d/m/Y H:i:s')]);
-    fputcsv($output, []); // Empty spacer line
+    // Write summary section
+    fputcsv($output, ['=== SUMMARY ===']);
+    fputcsv($output, ['Total Income', formatMoney($totalIncome)]);
+    fputcsv($output, ['Total Expense', formatMoney($totalExpense)]);
+    fputcsv($output, ['Balance', formatMoney($balance)]);
+    fputcsv($output, ['Total Transactions', count($transactions)]);
+    fputcsv($output, ['Exported At', date('d/m/Y H:i:s')]);
+    fputcsv($output, []);
 
-    fputcsv($output, ['No.', 'Date', 'Type', 'Category', 'Amount (VND)', 'Description']);
+    // Write table header
+    fputcsv($output, ['No', 'Date', 'Type', 'Category', 'Amount (VND)', 'Description']);
 
+    // Write data rows
     foreach ($transactions as $index => $tx) {
-        fputcsv($output, [
+        $row = [
             $index + 1,
             date('d/m/Y', strtotime($tx['transaction_date'])),
-            ucfirst($tx['type']),
+            $tx['type'] === 'income' ? 'Income' : 'Expense',
             $tx['category_name'] ?? 'Uncategorized',
             number_format($tx['amount'], 0, ',', '.'),
             $tx['description']
-        ]);
+        ];
+        fputcsv($output, $row);
     }
 
     fclose($output);
     exit;
 
 } catch (Exception $e) {
+    // Clean output buffer before sending error
     if (ob_get_level()) {
         ob_end_clean();
     }
+
+    header('Content-Type: text/html; charset=utf-8');
     http_response_code(500);
-    die("Export System Error: " . $e->getMessage());
+    die("Export failed. Please try again.");
 }

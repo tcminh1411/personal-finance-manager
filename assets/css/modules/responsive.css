@@ -4,6 +4,80 @@
  */
 
 /* ============================================================
+   0. Medium Desktop - Auto hide form when too narrow
+   ============================================================ */
+@media (max-width: 1200px) {
+  /* Financial Summary: Smaller text to fit better */
+  .summary-card h3 {
+    font-size: 14px;
+  }
+
+  .summary-card .value {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 1000px) {
+  /* Hide sidebar form, show toggle button */
+  #addForm {
+    display: none;
+    position: static;
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  #addForm.show {
+    display: block;
+  }
+
+  .toggle-form-btn {
+    display: block !important;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 12px;
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+  }
+
+  .toggle-form-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Main content takes full width */
+  main {
+    flex-direction: column;
+  }
+
+  section:not(#addForm) {
+    max-width: 100%;
+  }
+
+  /* Summary cards: responsive text */
+  .financial-summary {
+    gap: 10px;
+  }
+
+  .summary-card h3 {
+    font-size: 13px;
+  }
+
+  .summary-card .value {
+    font-size: 15px;
+  }
+}
+
+/* ============================================================
    1. Tablet & Large Mobile (Max-width: 768px)
    ============================================================ */
 @media (max-width: 768px) {
@@ -12,10 +86,15 @@
     flex-direction: column;
     gap: 20px;
     padding: 15px;
+    overflow-x: hidden;
   }
 
   section {
     padding: 18px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   /* Form: Remove sticky positioning and reset width */
@@ -24,6 +103,72 @@
     width: 100%;
     max-width: 100%;
     margin: 0 auto 20px;
+    display: none; /* Hidden by default on mobile */
+  }
+
+  #addForm.show {
+    display: block;
+  }
+
+  /* Toggle Button for Form */
+  .toggle-form-btn {
+    display: block !important;
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 12px;
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+  }
+
+  .toggle-form-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .toggle-form-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Charts Section - Prevent Overflow */
+  #charts {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    padding: 18px;
+  }
+
+  .charts-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .chart-card {
+    padding: 20px 15px;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .chart-wrapper {
+    height: 250px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .chart-card h3 {
+    font-size: 1.1rem;
   }
 
   /* Financial Summary: Force single-row with text truncation */
@@ -31,7 +176,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    gap: 8px;
+    gap: 6px;
     margin-bottom: 20px;
     overflow: hidden;
   }
@@ -42,23 +187,28 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 0; /* Prevents flex children from breaking parent width */
-    padding: 12px 8px;
+    min-width: 0;
+    padding: 10px 6px;
     text-align: center;
   }
 
-  .summary-card h3,
-  .value {
+  .summary-card h3 {
     width: 100%;
-    font-size: 13px;
+    font-size: 11px !important;
     line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 5px;
   }
 
-  .value {
-    font-size: 14px;
+  .summary-card .value {
+    width: 100%;
+    font-size: 13px !important;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* Controls: Stack filter rows */
@@ -135,7 +285,7 @@
 
   /* Pagination: Stack settings vertically */
   #pagination {
-    padding: 15px;
+    padding: 15px 10px;
     margin: 15px 0;
   }
 
@@ -149,10 +299,21 @@
     justify-content: center;
   }
 
+  .per-page-selector label {
+    font-size: 12px;
+  }
+
+  #per-page-select {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
   #pagination-info {
     min-width: auto;
-    font-size: 13px;
+    font-size: 12px;
     white-space: normal;
+    padding: 8px 10px;
+    line-height: 1.4;
   }
 
   #pagination-controls {
@@ -174,6 +335,7 @@
   main {
     padding: 10px;
   }
+
   section {
     padding: 15px;
   }
@@ -181,16 +343,41 @@
   h2 {
     font-size: 1.3rem;
   }
+
   h3 {
     font-size: 1rem;
   }
 
-  /* Compact metrics */
-  .summary-card h3 {
+  /* Charts - Smaller on very small screens */
+  .charts-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .chart-card {
+    padding: 15px 10px;
+  }
+
+  .chart-wrapper {
+    height: 220px;
+  }
+
+  .chart-card h3 {
+    font-size: 1rem;
+    margin-bottom: 15px;
+  }
+
+  .chart-description {
     font-size: 12px;
   }
-  .value {
-    font-size: 13px;
+
+  /* Compact metrics */
+  .summary-card h3 {
+    font-size: 10px !important;
+  }
+
+  .summary-card .value {
+    font-size: 12px !important;
   }
 
   /* Full-width form actions */
@@ -221,6 +408,25 @@
    3. Micro Viewports (Max-width: 360px)
    ============================================================ */
 @media (max-width: 360px) {
+  /* Summary cards: even smaller */
+  .summary-card h3 {
+    font-size: 9px !important;
+  }
+
+  .summary-card .value {
+    font-size: 11px !important;
+  }
+
+  .summary-card {
+    padding: 8px 4px;
+  }
+
+  /* Pagination info: smaller text */
+  #pagination-info {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+
   /* Wrap action buttons into two columns */
   .date-shortcuts,
   .filter-actions {
@@ -249,5 +455,14 @@
     min-width: 25px;
     height: 25px;
     font-size: 10px;
+  }
+
+  /* Charts even smaller */
+  .chart-wrapper {
+    height: 200px;
+  }
+
+  .chart-card h3 {
+    font-size: 0.95rem;
   }
 }

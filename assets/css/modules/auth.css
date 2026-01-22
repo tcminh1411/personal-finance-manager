@@ -1,0 +1,285 @@
+/**
+ * Authentication Styles
+ * Styles for login, register, and logout UI
+ */
+
+/* ============================================
+   Login/Register Page Layout
+   ============================================ */
+
+body.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+}
+
+.auth-container {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 420px;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-container h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+}
+
+/* ============================================
+   Form Elements
+   ============================================ */
+
+.auth-form .form-group {
+  margin-bottom: 20px;
+}
+
+.auth-form .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #34495e;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.auth-form .form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all 0.3s;
+}
+
+.auth-form .form-group input:focus {
+  outline: none;
+  border-color: #2ecc71;
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+}
+
+.auth-form .form-group input.error {
+  border-color: #e74c3c;
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+.btn-auth {
+  width: 100%;
+  padding: 12px;
+  background: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-auth:hover {
+  background: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+}
+
+.btn-auth:active {
+  transform: translateY(0);
+}
+
+.btn-auth:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ============================================
+   Messages
+   ============================================ */
+
+.error-message {
+  background: #fff5f5;
+  color: #e74c3c;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid #e74c3c;
+  font-size: 14px;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+.success-message {
+  background: #d4edda;
+  color: #27ae60;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid #27ae60;
+  font-size: 14px;
+}
+
+/* ============================================
+   Helper Text & Links
+   ============================================ */
+
+.demo-info {
+  text-align: center;
+  margin-top: 20px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #7f8c8d;
+  font-size: 13px;
+}
+
+.demo-info strong {
+  color: #2c3e50;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.auth-links a {
+  color: #2ecc71;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.auth-links a:hover {
+  color: #27ae60;
+  text-decoration: underline;
+}
+
+/* ============================================
+   Header Logout Button
+   ============================================ */
+
+header {
+  position: relative;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header-user-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-info {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.logout-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 30px 20px;
+    max-width: 90%;
+  }
+
+  .auth-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .header-user-section {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 25px 15px;
+  }
+
+  .auth-container h1 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+
+  .auth-form .form-group {
+    margin-bottom: 15px;
+  }
+
+  .btn-auth {
+    padding: 10px;
+    font-size: 15px;
+  }
+}

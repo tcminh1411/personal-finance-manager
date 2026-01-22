@@ -10,5 +10,17 @@
 
 <body>
     <header>
-        <h1>Personal Finance Manager</h1>
+        <div class="header-content">
+            <h1>Personal Finance Manager</h1>
+            <?php if (isset($_SESSION['username'])): ?>
+                <div class="header-user-section">
+                    <span class="user-info">
+                        👤 <?= htmlspecialchars($_SESSION['username']) ?>
+                    </span>
+                    <a href="auth/logout.php" class="logout-btn">
+                        🚪 Đăng xuất
+                    </a>
+                </div>
+            <?php endif; ?>
+        </div>
     </header>

@@ -2,6 +2,7 @@
  * Filter Events Module
  * Handle all event bindings with optimized debounce
  */
+
 const FilterEvents = {
   // Track last search value
   lastSearchValue: "",
@@ -12,6 +13,7 @@ const FilterEvents = {
     this.bindResetButton();
     this.bindSearchInput();
     this.bindFilterType();
+    this.bindFilterCategory(); // ← FIX: Add category auto-filter
     this.bindDateShortcuts();
     this.bindSortHeaders();
   },
@@ -59,6 +61,7 @@ const FilterEvents = {
 
     input.addEventListener("input", () => {
       const currentValue = input.value.trim();
+
       if (currentValue === this.lastSearchValue) return;
 
       clearTimeout(this.searchTimeout);
@@ -92,8 +95,17 @@ const FilterEvents = {
     if (!filterType) return;
 
     filterType.addEventListener("change", (e) => {
+      const selectedType = e.target.value;
+
+      // FIX: Filter categories BEFORE resetting category value
       if (typeof FilterCore !== "undefined") {
-        FilterCore.filterCategoriesByType(e.target.value);
+        FilterCore.filterCategoriesByType(selectedType);
+      }
+
+      // FIX: Clear category selection after type changes
+      const categorySelect = document.getElementById("filter-category");
+      if (categorySelect) {
+        categorySelect.value = "";
       }
 
       // Reset pagination khi đổi loại
@@ -104,6 +116,26 @@ const FilterEvents = {
         PaginationHandler.resetToFirstPage();
       }
 
+      // Auto apply filters
+      FilterAPI.applyFilters();
+    });
+  },
+
+  // FIX: Add auto-filter when category changes
+  bindFilterCategory() {
+    const filterCategory = document.getElementById("filter-category");
+    if (!filterCategory) return;
+
+    filterCategory.addEventListener("change", () => {
+      // Reset pagination về trang 1
+      if (typeof FilterCore !== "undefined") {
+        FilterCore.resetPagination();
+      }
+      if (typeof PaginationHandler !== "undefined") {
+        PaginationHandler.resetToFirstPage();
+      }
+
+      // Auto apply filters (giống như filter-type)
       FilterAPI.applyFilters();
     });
   },
@@ -198,6 +230,11 @@ const FilterEvents = {
       if (el) el.value = "";
     });
 
+    // FIX: Reset category filter to show all categories
+    if (typeof FilterCore !== "undefined") {
+      FilterCore.filterCategoriesByType(""); // Empty = show all
+    }
+
     // Reset sort headers
     document.querySelectorAll(".sortable").forEach((th) => {
       th.classList.remove("sort-asc", "sort-desc");
@@ -232,30 +269,24 @@ const FilterEvents = {
         fromEl.value = formatDate(today);
         toEl.value = formatDate(today);
         break;
-
       case "week": {
         const startOfWeek = new Date(today);
         const dayOfWeek = today.getDay();
         const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
         startOfWeek.setDate(date - daysToMonday);
-
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 6);
-
         fromEl.value = formatDate(startOfWeek);
         toEl.value = formatDate(endOfWeek);
         break;
       }
-
       case "month": {
         const startOfMonth = new Date(year, month, 1);
         const endOfMonth = new Date(year, month + 1, 0);
-
         fromEl.value = formatDate(startOfMonth);
         toEl.value = formatDate(endOfMonth);
         break;
       }
-
       default:
         // Clear dates if range not recognized
         fromEl.value = "";

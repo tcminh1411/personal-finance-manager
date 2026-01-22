@@ -1,80 +1,284 @@
 # 💰 Personal Finance Manager
 
-Một ứng dụng quản lý tài chính cá nhân hiện đại, giúp bạn theo dõi dòng tiền, kiểm soát chi tiêu và quản lý ngân sách hiệu quả.
-Phiên bản hiện tại: **v1.2 - AJAX & Dynamic Categories**, tích hợp AJAX hoàn chỉnh với giao diện động và xử lý không tải lại trang.
+> Modern web application for personal financial management with real-time tracking, advanced filtering, and data visualization.
 
-![Ảnh Demo Dự Án](assets/images/demo/full%20page.png)
+![Status](https://img.shields.io/badge/status-live-success) ![PHP](https://img.shields.io/badge/PHP-8.0%2B-777BB4?logo=php) ![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E?logo=javascript) ![MySQL](https://img.shields.io/badge/MySQL-5.7%2B-4479A1?logo=mysql)
 
-## ✨ Tính năng chính
+**🌐 Live Demo:** [https://personalfinance.lovestoblog.com/](https://personalfinance.lovestoblog.com/)  
+**Demo Accounts:** `admin`/`123456` or `minh`/`141103`
 
-- **📝 CRUD Giao dịch AJAX:** Thêm, Xem, Sửa, Xóa các khoản Thu/Chi không tải lại trang (AJAX với API endpoints).
-- **📊 Thống kê động:** Tự động tính toán Tổng thu, Tổng chi và Số dư hiện tại với real-time updates.
-- **🔍 Bộ lọc & Tìm kiếm nâng cao:**
-  - Lọc theo Loại (Thu/Chi), Danh mục, Khoảng thời gian
-  - Tìm kiếm theo mô tả với debounce 500ms
-  - Sắp xếp theo cột (ngày, số tiền, mô tả)
-  - Date shortcuts nhanh (Hôm nay, Tuần này, Tháng này)
-- **📑 Phân trang thông minh:**
-  - Hai chế độ: Phân trang truyền thống và "Tải thêm"
-  - Tùy chọn số lượng hiển thị (10, 25, 50, 100)
-  - Lưu cài đặt trong localStorage
-- **📥 Xuất dữ liệu CSV:**
-  - Xuất toàn bộ hoặc theo filter hiện tại
-  - Bao gồm tổng kết (tổng thu, tổng chi, số dư)
-  - Tương thích Excel với UTF-8 BOM
-- **🏷️ Danh mục động:**
-  - Tự động lọc danh mục theo loại giao dịch
-  - Đồng bộ loại khi chọn danh mục
-  - Quản lý qua API `/api/categories/list.php`
-- **📱 Giao diện Responsive:** Hiển thị tốt trên cả Máy tính, Tablet và Điện thoại.
-- **🔄 Trải nghiệm mượt mà:** Không tải lại trang, validation real-time, loading states.
+---
 
-## 🛠 Công nghệ sử dụng
+## 📸 Screenshots
 
-- **Frontend:** HTML5, CSS3, JavaScript (Vanilla ES6 với Modular Architecture)
-- **Backend:** PHP 8.x (PDO với prepared statements)
-- **Database:** MySQL 5.7+
-- **API:** RESTful với JSON responses
-- **Tools:** Git, VS Code, XAMPP/Laragon
+<img src="assets/images/demo/full page.png" alt="Dashboard" width="400"/>
 
-## 🚀 Hướng dẫn cài đặt & Chạy
+---
 
-Dự án yêu cầu Web Server hỗ trợ PHP và MySQL (khuyên dùng XAMPP).
+## ✨ Key Features
 
-1. **Chuẩn bị môi trường:**
+### 🔐 Security
 
-   - Cài đặt XAMPP (hoặc WAMP/Laragon).
-   - Khởi động **Apache** và **MySQL**.
+- ✅ Bcrypt password hashing + Session timeout
+- ✅ SQL injection prevention (PDO prepared statements)
+- ✅ XSS protection + Input validation
+- ✅ User data isolation (transactions filtered by user_id)
 
-2. **Cài đặt Database:**
+### 💳 Transaction Management
 
-   - Mở phpMyAdmin (thường là `http://localhost/phpmyadmin`).
-   - Tạo database mới tên: `finance_db`.
-   - Import file `migrations/001_init.sql` vào database vừa tạo.
+- ✅ CRUD with AJAX (no page reload)
+- ✅ Smart category auto-filtering by type
+- ✅ Real-time validation (frontend + backend)
+- ✅ Date management (defaults to today, blocks future dates)
 
-3. **Cấu hình kết nối:**
+### 🔍 Advanced Filtering
 
-   - Mở file `config/database.php`.
-   - Kiểm tra thông tin `$host`, `$username`, `$password`, `$db_name` cho khớp với máy bạn.
+- ✅ Multi-criteria: Type, Category, Date Range, Keyword
+- ✅ Debounced search (500ms delay)
+- ✅ Quick filters: Today, This Week, This Month
+- ✅ Column sorting (Date, Amount, Category, Description)
 
-4. **Chạy ứng dụng:**
-   - Copy thư mục dự án vào `C:/xampp/htdocs/`.
-   - Mở trình duyệt truy cập: `http://localhost/personal-finance-manager`.
+### 📊 Visualization
 
-## 📅 Lộ trình phát triển
+- ✅ Chart.js integration (Pie Chart + Bar Chart)
+- ✅ Real-time updates after CRUD operations
+- ✅ Responsive design for all screen sizes
 
-- [x] **Tuần 1:** Hoàn thiện UI/UX và Logic Frontend cơ bản.
-- [x] **Tuần 2:** Kết nối Database MySQL và Backend PHP (CRUD hoàn chỉnh).
-- [x] **Tuần 3:** Nâng cao UX với AJAX (API) và Danh mục động (Dynamic Categories).
-  - ✅ AJAX cho tất cả CRUD operations
-  - ✅ Filter system với debounce search
-  - ✅ Pagination với 2 mode
-  - ✅ CSV export với summary
-  - ✅ Dynamic category filtering
-  - ✅ Modular JavaScript architecture
-- [ ] **Tuần 4:** Bảo mật nâng cao, Biểu đồ thống kê và Triển khai thực tế.
+### 📱 Responsive Design
 
-_Dự án thực hành Hybrid Fullstack - 2025-26_  
-_Đã hoàn thành: Frontend cơ bản, Backend PHP, AJAX & Dynamic Features_  
-_Sắp tới: Biểu đồ, Bảo mật nâng cao, Deployment_
-hi
+- ✅ Mobile-first approach
+- ✅ 6 breakpoints (360px → 1400px)
+- ✅ Toggle form on small screens (< 1000px)
+- ✅ Sticky sidebar on desktop
+
+### 🎯 Other Features
+
+- ✅ Server-side pagination (10/25/50/100 rows)
+- ✅ CSV export with summary
+- ✅ Excel-compatible UTF-8 encoding
+- ✅ Loading states + notifications
+
+---
+
+## 🛠 Tech Stack
+
+**Backend:** PHP 8.0+, MySQL 5.7+, PDO, bcrypt  
+**Frontend:** HTML5, CSS3 (Grid/Flexbox), Vanilla JavaScript ES6+  
+**Libraries:** Chart.js 4.4.0  
+**Hosting:** InfinityFree (Free)
+
+**Architecture:**
+
+- 9 CSS modules (modular styling)
+- 14 JS modules + 1 app entry (modular logic)
+- 7 API endpoints (RESTful)
+- 3 SQL migrations (schema + data)
+
+---
+
+## 📁 Project Structure
+
+```
+personal-finance-manager/
+├── 📁 api/                      # RESTful API endpoints (7 files)
+│   ├── analytics/summary.php    # Chart data
+│   ├── categories/list.php      # Category management
+│   └── transactions/            # CRUD operations
+│       ├── delete.php, export.php, filter.php
+│       ├── save.php, update.php
+├── 📁 assets/
+│   ├── css/modules/             # 9 CSS modules + manifest
+│   ├── images/demo/             # Screenshots
+│   └── js/modules/              # 14 JS modules + app.js
+│       ├── filter/              # 5-file filter system
+│       └── chart-handler.js, form-handler.js, etc.
+├── 📁 auth/                     # Authentication (4 files)
+│   ├── check-auth.php, login-process.php
+│   ├── logout.php, register-process.php
+├── 📁 config/
+│   └── database.php             # DB connection
+├── 📁 includes/
+│   ├── footer.php, header.php, helpers.php
+├── 📁 migrations/               # 3 SQL files
+│   ├── 001_init.sql, 002_update_password_hash.sql
+│   └── 003.sql                  # 100 sample transactions
+├── .htaccess                    # Security headers
+├── index.php, login.php, register.php
+└── README.md
+```
+
+---
+
+## 🚀 Installation
+
+### Prerequisites
+
+- XAMPP/Laragon (PHP 8.0+, MySQL 5.7+)
+- Modern browser
+
+### Quick Start
+
+```bash
+# 1. Clone repository
+git clone https://github.com/tcminh1411/personal-finance-manager.git
+
+# 2. Move to htdocs
+mv personal-finance-manager /path/to/xampp/htdocs/
+
+# 3. Create database in phpMyAdmin
+# - Database name: finance_db
+# - Collation: utf8mb4_unicode_ci
+
+# 4. Import SQL files (in order)
+migrations/001_init.sql
+migrations/002_update_password_hash.sql
+migrations/003.sql
+
+# 5. Configure database (if needed)
+# Edit config/database.php
+
+# 6. Access application
+# http://localhost/personal-finance-manager
+
+# 7. Login with demo account
+# Username: admin / Password: 123456
+```
+
+### File Permissions (Linux/Mac)
+
+```bash
+chmod 644 *.php
+chmod 755 assets/ api/ auth/ config/ includes/ migrations/
+chmod 600 config/database.php
+```
+
+---
+
+## 📖 Quick Usage Guide
+
+**Add Transaction:** Fill form → Select type → Choose category → Enter amount/description → Submit
+
+**Filter Data:** Use search box / Select type & category / Pick date range / Click "Lọc"
+
+**Sort:** Click column headers (↕ symbol)
+
+**Edit:** Click "Sửa" button → Modify → Update
+
+**Delete:** Click "Xóa" → Confirm
+
+**Export CSV:** Apply filters (optional) → Click "Xuất CSV"
+
+**View Charts:** Scroll down to "Phân Tích Chi Tiêu" section
+
+---
+
+## 📊 Project Stats
+
+| Metric                | Value                     |
+| --------------------- | ------------------------- |
+| **Total Files**       | 49 (code + assets)        |
+| **Lines of Code**     | ~8,500+                   |
+| **PHP Files**         | 18 (API + Auth + Pages)   |
+| **JavaScript Files**  | 15 (14 modules + app)     |
+| **CSS Files**         | 10 (9 modules + manifest) |
+| **SQL Migrations**    | 3 (schema + data)         |
+| **Development Time**  | 7 weeks                   |
+| **Features**          | 40+                       |
+| **Breakpoints**       | 6 responsive breakpoints  |
+| **Demo Transactions** | 100 (user: minh)          |
+
+---
+
+## 🎯 Development Timeline
+
+**Week 1-2:** Database design, Basic CRUD, HTML/CSS foundation  
+**Week 3-4:** AJAX integration, Advanced filtering, Pagination, CSV export  
+**Week 5-6:** Authentication, Chart.js, Responsive design, UX polish  
+**Week 7:** Security audit, Documentation, Deployment to InfinityFree
+
+---
+
+## 🤝 AI Collaboration
+
+This project was developed with **Claude AI (Anthropic)** as a coding companion:
+
+**AI Contributions (~60% code volume):**
+
+- Security implementation (session, validation, auth)
+- Modular architecture (15 JS files, 10 CSS files)
+- Responsive design system (6 breakpoints)
+- Database optimization (indexes, queries)
+- Documentation (README, comments)
+
+**Human Contributions (~40% decision-making):**
+
+- Project vision and requirements
+- UX design and workflow
+- Feature prioritization
+- Testing and validation
+- Final integration and deployment
+
+This demonstrates effective **human-AI collaboration** in modern development - using AI to accelerate implementation while maintaining creative control and code ownership.
+
+---
+
+## 🐛 Known Issues & Roadmap
+
+**Current Limitations:**
+
+- Charts require modern browser (no IE11 support)
+- Free hosting may have occasional downtime
+
+**Planned Enhancements:**
+
+- Budget planning and goals
+- Recurring transactions
+- Multi-currency support
+- Mobile app (React Native)
+- Two-factor authentication
+- PDF reports
+- Bank statement import
+
+---
+
+## 📄 License
+
+MIT License - Copyright (c) 2026 Thái Cao Minh
+
+Free to use, modify, and distribute. See [LICENSE](LICENSE) file for details.
+
+---
+
+## 📞 Contact
+
+**Developer:** Thái Cao Minh  
+**Email:** [tcminh1411@gmail.com](mailto:tcminh1411@gmail.com)  
+**GitHub:** [github.com/tcminh1411](https://github.com/tcminh1411)  
+**Live Demo:** [personalfinance.lovestoblog.com](https://personalfinance.lovestoblog.com/)
+
+**Found a bug?** [Create an issue](https://github.com/tcminh1411/personal-finance-manager/issues)  
+**Security issue?** Email directly (do not post publicly)
+
+---
+
+## 🙏 Acknowledgments
+
+**Technology:** PHP Community • Chart.js Team • InfinityFree • OWASP  
+**Learning:** MDN Web Docs • Stack Overflow • freeCodeCamp  
+**AI Partner:** Anthropic Claude (coding companion throughout development)
+
+---
+
+<div align="center">
+
+**⭐ Star this repo if you find it helpful!**
+
+**Made with ❤️ and ☕ (and AI assistance)**
+
+[🌐 Live Demo](https://personalfinance.lovestoblog.com/) • [📂 GitHub](https://github.com/tcminh1411/personal-finance-manager) • [📧 Contact](mailto:tcminh1411@gmail.com)
+
+---
+
+**Last Updated:** January 2026 | **Version:** 1.3.0 | **Status:** ✅ Production Ready
+
+</div>

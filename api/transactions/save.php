@@ -5,10 +5,21 @@
  */
 
 header('Content-Type: application/json');
+
+// Start session to get user_id
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['logged_in']) || !isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit;
+}
+
 require_once '../../config/database.php';
 require_once '../../includes/helpers.php';
 
-// 1. Validate Method
+// Allow only POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Method Not Allowed']);
@@ -19,58 +30,65 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
  * Controller: Transaction Creation Process
  */
 try {
-    // A. Extract & Sanitize Input
+    // Get current user ID from session
+    $user_id = $_SESSION['user_id'];
+
+    // Receive input data
     $amount = $_POST['amount'] ?? 0;
     $type = $_POST['type'] ?? '';
     $description = trim($_POST['description'] ?? '');
-    $date = $_POST['date'] ?? getTodayISO(); // Fallback to current system date
-    $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
-    $user_id = 1; // Context: Default user (Replace with Session Auth later)
+    $date = $_POST['date'] ?? getTodayISO();
+    $category_id = $_POST['category_id'] ?? null;
 
-    // B. Validation Logic
+    // Convert empty string to NULL
+    if (empty($category_id)) {
+        $category_id = null;
+    }
+
+    // Validate all inputs
     $errors = [];
 
-    // B1. Amount Validation
-    $amountVal = validateAmount($amount);
-    if (!$amountVal['valid']) {
-        $errors[] = $amountVal['error'];
+    // Validate amount
+    $amountValidation = validateAmount($amount);
+    if (!$amountValidation['valid']) {
+        $errors[] = $amountValidation['error'];
     } else {
-        $amount = $amountVal['value'];
+        $amount = $amountValidation['value'];
     }
 
-    // B2. Type Validation (Income/Expense)
-    $typeVal = validateType($type);
-    if (!$typeVal['valid']) {
-        $errors[] = $typeVal['error'];
+    // Validate type
+    $typeValidation = validateType($type);
+    if (!$typeValidation['valid']) {
+        $errors[] = $typeValidation['error'];
     }
 
-    // B3. Description & Meta
-    $descVal = validateDescription($description);
-    if (!$descVal['valid']) {
-        $errors[] = $descVal['error'];
+    // Validate description
+    $descValidation = validateDescription($description);
+    if (!$descValidation['valid']) {
+        $errors[] = $descValidation['error'];
     } else {
-        $description = $descVal['value'];
+        $description = $descValidation['value'];
     }
 
-    // B4. Date Consistency
-    $dateVal = validateDate($date);
-    if (!$dateVal['valid']) {
-        $errors[] = $dateVal['error'];
+    // Validate date
+    $dateValidation = validateDate($date);
+    if (!$dateValidation['valid']) {
+        $errors[] = $dateValidation['error'];
     }
 
-    // B5. Relational Integrity (Category check)
-    $catVal = validateCategory($pdo, $category_id, $type);
-    if (!$catVal['valid']) {
-        $errors[] = $catVal['error'];
+    // Validate category (if provided)
+    $categoryValidation = validateCategory($pdo, $category_id, $type);
+    if (!$categoryValidation['valid']) {
+        $errors[] = $categoryValidation['error'];
     }
 
-    // C. Handle Validation Failures
+    // Return validation errors
     if (!empty($errors)) {
         // Collect all issues and throw as a single exception
         throw new InvalidArgumentException(implode(', ', $errors));
     }
 
-    // D. Database Persistence
+    // Save to database with current user_id
     $sql = "INSERT INTO transactions (user_id, category_id, amount, type, description, transaction_date, created_at)
             VALUES (:user_id, :category_id, :amount, :type, :description, :date, NOW())";
 
@@ -84,17 +102,13 @@ try {
         ':date' => $date
     ]);
 
-    // E. JSON Success Response
     echo json_encode([
         'success' => true,
         'message' => 'Lưu giao dịch thành công!',
         'id' => $pdo->lastInsertId()
     ]);
 
-} catch (Throwable $e) {
-    // Error Logging & Handling
-    error_log("Transaction Create Error: " . $e->getMessage());
-
+} catch (Exception $e) {
     http_response_code(400);
     echo json_encode([
         'success' => false,

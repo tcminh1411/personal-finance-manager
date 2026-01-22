@@ -1,23 +1,34 @@
 <?php
+// Protect this page - require login
+require_once 'auth/check-auth.php';
 require_once 'config/database.php';
 require_once 'includes/helpers.php';
 
-// ===== PAGINATION - LẤY TỪ URL NẾU CÓ =====
+// Get current user ID from session
+$current_user_id = $_SESSION['user_id'];
+
+// ===== PAGINATION - GET FROM URL =====
 $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
 $limit = isset($_GET['limit']) ? max(1, min(100, (int) $_GET['limit'])) : 10;
 $offset = ($page - 1) * $limit;
 
-// ===== TẠO CATEGORY MAP ĐỂ TRÁNH N+1 =====
+// ===== FIX: Initialize variables BEFORE try block =====
+$totalRecords = 0;
+$totalPages = 0;
 $categoryMap = [];
+$categories = [];
+$transactions = [];
+$totalIncome = 0;
+$totalExpense = 0;
 
 try {
-  // Lấy danh sách categories và tạo map
+  // Get categories list
   $sqlCat = "SELECT id, name, type FROM categories ORDER BY type, name";
   $stmtCat = $pdo->prepare($sqlCat);
   $stmtCat->execute();
   $categories = $stmtCat->fetchAll();
 
-  // Tạo map id -> name
+  // Create id -> name map
   foreach ($categories as $cat) {
     $categoryMap[$cat['id']] = [
       'name' => $cat['name'],
@@ -25,21 +36,36 @@ try {
     ];
   }
 
-  // Get transactions với pagination
-  $sql = "SELECT * FROM transactions ORDER BY transaction_date DESC LIMIT :limit OFFSET :offset";
+  // Count total records for pagination
+  $sqlCount = "SELECT COUNT(*) as total FROM transactions WHERE user_id = :user_id";
+  $stmtCount = $pdo->prepare($sqlCount);
+  $stmtCount->execute([':user_id' => $current_user_id]);
+  $countResult = $stmtCount->fetch();
+  $totalRecords = (int) ($countResult['total'] ?? 0);
+  $totalPages = $totalRecords > 0 ? (int) ceil($totalRecords / $limit) : 0;
+
+  // Fetch transactions for current user
+  $sql = "SELECT * FROM transactions
+            WHERE user_id = :user_id
+            ORDER BY transaction_date DESC, id DESC
+            LIMIT :limit OFFSET :offset";
+
   $stmt = $pdo->prepare($sql);
+  $stmt->bindValue(':user_id', $current_user_id, PDO::PARAM_INT);
   $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
   $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
   $stmt->execute();
   $transactions = $stmt->fetchAll();
 
-  // Calculate totals (ALL data)
+  // Calculate totals for CURRENT USER only
   $sqlTotal = "SELECT
-                 SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as total_income,
-                 SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as total_expense
-               FROM transactions";
+        SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as total_income,
+        SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as total_expense
+        FROM transactions
+        WHERE user_id = :user_id";
+
   $stmtTotal = $pdo->prepare($sqlTotal);
-  $stmtTotal->execute();
+  $stmtTotal->execute([':user_id' => $current_user_id]);
   $totals = $stmtTotal->fetch();
 
   $totalIncome = $totals['total_income'] ?? 0;
@@ -101,6 +127,7 @@ require_once 'includes/header.php';
 
   <section>
     <h2>Quản lý</h2>
+
     <div class="financial-summary">
       <div class="summary-card">
         <h3>Tổng Thu</h3>
@@ -121,6 +148,36 @@ require_once 'includes/header.php';
         </p>
       </div>
     </div>
+
+    <hr class="separator" />
+
+    <!-- Charts Section -->
+    <section id="charts">
+      <h2>📊 Phân Tích Chi Tiêu</h2>
+      <div class="charts-container">
+        <!-- Pie Chart -->
+        <div class="chart-card">
+          <h3>Chi Tiêu Theo Danh Mục</h3>
+          <div class="chart-wrapper">
+            <canvas id="expensePieChart"></canvas>
+          </div>
+          <p class="chart-description">
+            Biểu đồ tròn thể hiện tỷ lệ chi tiêu theo từng danh mục
+          </p>
+        </div>
+
+        <!-- Bar Chart -->
+        <div class="chart-card">
+          <h3>Thu Chi Theo Tháng</h3>
+          <div class="chart-wrapper">
+            <canvas id="incomeExpenseBarChart"></canvas>
+          </div>
+          <p class="chart-description">
+            So sánh thu nhập và chi tiêu trong 12 tháng gần nhất
+          </p>
+        </div>
+      </div>
+    </section>
 
     <hr class="separator" />
 
@@ -158,7 +215,6 @@ require_once 'includes/header.php';
             <option value="expense">Chi</option>
           </select>
         </div>
-
         <div class="filter-col">
           <select id="filter-category">
             <option value="">-- Tất cả danh mục --</option>
@@ -177,7 +233,6 @@ require_once 'includes/header.php';
         <button type="button" class="btn btn-reset" id="btnReset">🔄 Reset</button>
       </div>
 
-      <!-- Filter Results -->
       <div class="filter-result-box">
         <div id="filter-info"></div>
         <div id="export-message"></div>
@@ -186,7 +241,7 @@ require_once 'includes/header.php';
 
     <hr class="separator" />
 
-    <!-- ===== NEW: PAGINATION SECTION ===== -->
+    <!-- Pagination Section -->
     <div id="pagination">
       <div class="pagination-settings">
         <div class="per-page-selector">
@@ -198,6 +253,7 @@ require_once 'includes/header.php';
             <option value="100" <?= $limit == 100 ? 'selected' : '' ?>>100 dòng</option>
           </select>
         </div>
+
         <div id="pagination-info">
           <?php if ($totalRecords > 0): ?>
             Hiển thị <?= min(($page - 1) * $limit + 1, $totalRecords) ?>-<?= min($page * $limit, $totalRecords) ?>
@@ -207,6 +263,7 @@ require_once 'includes/header.php';
           <?php endif; ?>
         </div>
       </div>
+
       <div id="pagination-controls">
         <?php if ($totalPages > 0): ?>
           <button class="btn-prev" <?= $page <= 1 ? 'disabled' : '' ?>>‹</button>
@@ -230,7 +287,6 @@ require_once 'includes/header.php';
         <?php endif; ?>
       </div>
     </div>
-    <!-- =================================== -->
 
     <h3>Danh sách giao dịch</h3>
     <div class="table-wrapper">
@@ -238,11 +294,11 @@ require_once 'includes/header.php';
         <thead>
           <tr>
             <th>STT</th>
-            <th class="sortable" data-key="transaction_date" title="Bấm để xếp theo ngày">Ngày ↕</th>
-            <th class="sortable" data-key="type" title="Bấm để xếp theo loại">Loại ↕</th>
-            <th class="sortable" data-key="category_name" title="Bấm để xếp theo danh mục">Danh mục ↕</th>
-            <th class="sortable" data-key="amount" title="Bấm để xếp theo tiền">Số tiền ↕</th>
-            <th class="sortable" data-key="description" title="Bấm để xếp theo tên">Mô tả ↕</th>
+            <th class="sortable" data-key="transaction_date">Ngày ↕</th>
+            <th class="sortable" data-key="type">Loại ↕</th>
+            <th class="sortable" data-key="category_name">Danh mục ↕</th>
+            <th class="sortable" data-key="amount">Số tiền ↕</th>
+            <th class="sortable" data-key="description">Mô tả ↕</th>
             <th>Hành động</th>
           </tr>
         </thead>
@@ -268,9 +324,7 @@ require_once 'includes/header.php';
                   }
                   ?>
                 </td>
-                <td class="text-dark">
-                  <?= formatMoney($tx['amount']) ?>
-                </td>
+                <td class="text-dark"><?= formatMoney($tx['amount']) ?></td>
                 <td><?= e($tx['description']) ?></td>
                 <td>
                   <button class="btn btn-edit" data-id="<?= $tx['id'] ?>"
@@ -281,9 +335,7 @@ require_once 'includes/header.php';
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="7" class="empty-row">
-                Chưa có giao dịch.
-              </td>
+              <td colspan="7" class="empty-row">Chưa có giao dịch.</td>
             </tr>
           <?php endif; ?>
         </tbody>
@@ -292,6 +344,4 @@ require_once 'includes/header.php';
   </section>
 </main>
 
-<?php
-require_once 'includes/footer.php';
-?>
+<?php require_once 'includes/footer.php'; ?>
