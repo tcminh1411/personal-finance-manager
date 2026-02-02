@@ -11,7 +11,7 @@
 
 ## 📸 Screenshots
 
-<img src="assets/images/demo/full page.png" alt="Dashboard" width="400"/>
+<img src="assets/images/demo/fullpage.png" alt="Dashboard" width="800"/>
 
 ---
 

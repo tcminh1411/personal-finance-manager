@@ -49,21 +49,18 @@ const ExportHandler = {
    */
   buildExportParams() {
     const params = new URLSearchParams();
-    const filterKeys = [
-      "search",
-      "type",
-      "category_id",
-      "date_from",
-      "date_to",
-    ];
+    // Map param keys to actual DOM element IDs (filter-category, not filter-category-id)
+    const mapping = {
+      search: "filter-search",
+      type: "filter-type",
+      category_id: "filter-category",
+      date_from: "filter-date-from",
+      date_to: "filter-date-to",
+    };
 
-    filterKeys.forEach((key) => {
-      const elementId = `filter-${key.replace("_", "-")}`;
+    Object.entries(mapping).forEach(([key, elementId]) => {
       const value = document.getElementById(elementId)?.value;
-
-      if (value) {
-        params.append(key, value);
-      }
+      if (value) params.append(key, value);
     });
 
     return params;

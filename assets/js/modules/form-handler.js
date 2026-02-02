@@ -88,6 +88,9 @@ const FormHandler = {
     } catch (error) {
       Utils.showNotification("Có lỗi kết nối server!", "error");
       this.resetButton(btnSubmit, originalText);
+      if (window.location.hostname === "localhost") {
+        console.error("Form submission error:", error);
+      }
     }
   },
 
@@ -152,7 +155,7 @@ const FormHandler = {
 
     // Update submit button
     const btnSubmit = document.querySelector(
-      "#transactionForm button[type='submit']"
+      "#transactionForm button[type='submit']",
     );
     btnSubmit.innerHTML = "💾 Cập nhật";
     btnSubmit.classList.add("btn-warning");

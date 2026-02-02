@@ -63,6 +63,9 @@ const TableHandler = {
       }
     } catch (error) {
       alert("Lỗi kết nối server");
+      if (window.location.hostname === "localhost") {
+        console.error("Delete transaction error:", error);
+      }
     }
   },
 
@@ -155,8 +158,8 @@ const TableHandler = {
         <td>${Utils.escapeHtml(tx.description)}</td>
         <td>
           <button class="btn-edit" data-id="${tx.id}" data-category="${
-      tx.category_id || ""
-    }">Sửa</button>
+            tx.category_id || ""
+          }">Sửa</button>
           <button class="btn-delete" data-id="${tx.id}">Xóa</button>
         </td>
       </tr>
@@ -172,13 +175,13 @@ const TableHandler = {
    */
   updateSummary(summary) {
     const incomeEl = document.querySelector(
-      ".summary-card:nth-child(1) .value"
+      ".summary-card:nth-child(1) .value",
     );
     const expenseEl = document.querySelector(
-      ".summary-card:nth-child(2) .value"
+      ".summary-card:nth-child(2) .value",
     );
     const balanceEl = document.querySelector(
-      ".summary-card:nth-child(3) .value"
+      ".summary-card:nth-child(3) .value",
     );
 
     if (incomeEl) {

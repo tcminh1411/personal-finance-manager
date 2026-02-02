@@ -46,7 +46,7 @@ INSERT INTO categories (name, type) VALUES
 ('Lương', 'income'),
 ('Thưởng', 'income'),
 ('Đầu tư', 'income'),
-('Khác', 'income');
+('Khác', 'income'),
 ('Ăn uống', 'expense'),
 ('Di chuyển', 'expense'),
 ('Tiền nhà', 'expense'),
