@@ -37,6 +37,37 @@
 
             <button type="submit" class="btn-auth">Đăng Nhập</button>
         </form>
+        <button type="button" class="btn-demo" onclick="demoLogin()">
+            ⚡ Dùng tài khoản Demo
+        </button>
+
+        <script>
+        function demoLogin() {
+            document.getElementById('username').value = 'minh';
+            document.getElementById('password').value = '141103';
+            document.querySelector('.auth-form').submit();
+        }
+        </script>
+
+        <style>
+        .btn-demo {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background: #f0f4ff;
+            color: #4a6cf7;
+            border: 2px dashed #4a6cf7;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-demo:hover {
+            background: #4a6cf7;
+            color: white;
+        }
+        </style>
 
         <div class="auth-links">
             Chưa có tài khoản? <a href="register">Đăng ký ngay</a>
