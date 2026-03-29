@@ -202,23 +202,13 @@ chmod 600 config/database.php
 
 This project was developed with **Claude AI (Anthropic)** as a coding companion:
 
-**AI Contributions (~60% code volume):**
+## 🛠 Development Notes
 
-- Security implementation (session, validation, auth)
-- Modular architecture (15 JS files, 10 CSS files)
-- Responsive design system (6 breakpoints)
-- Database optimization (indexes, queries)
-- Documentation (README, comments)
-
-**Human Contributions (~40% decision-making):**
-
-- Project vision and requirements
-- UX design and workflow
-- Feature prioritization
-- Testing and validation
-- Final integration and deployment
-
-This demonstrates effective **human-AI collaboration** in modern development - using AI to accelerate implementation while maintaining creative control and code ownership.
+Built over 7 weeks as a self-directed learning project.
+Used AI tools (Claude) as a coding assistant to accelerate
+implementation — similar to using Stack Overflow or documentation,
+but interactive. All architecture decisions, feature design,
+and debugging were done independently.
 
 ---
 
