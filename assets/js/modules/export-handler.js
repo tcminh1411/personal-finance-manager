@@ -24,7 +24,7 @@ const ExportHandler = {
     if (!btn) return;
 
     const originalText = btn.innerHTML;
-    btn.innerHTML = "⏳ Đang xuất...";
+    btn.innerHTML = "<i class=\"ri-loader-line ri-spin\"></i> Đang xuất...";
     btn.disabled = true;
 
     // Build URL with current filter parameters
@@ -34,7 +34,7 @@ const ExportHandler = {
     this.downloadFile(`api/transactions/export.php?${params.toString()}`);
 
     // Show success message
-    this.showMessage("✅ Đã xuất file CSV thành công!", "success");
+    this.showMessage("<i class=\"ri-checkbox-circle-line\"></i> Đã xuất file CSV thành công!", "success");
 
     // Restore button state after short delay
     setTimeout(() => {

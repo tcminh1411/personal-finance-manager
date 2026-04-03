@@ -23,7 +23,7 @@ const ToggleFormHandler = {
 
     const button = document.createElement("button");
     button.className = "toggle-form-btn";
-    button.innerHTML = "➕ Thêm Giao Dịch";
+    button.innerHTML = "<i class=\"ri-add-line\"></i> Thêm Giao Dịch";
     button.type = "button";
 
     const addForm = document.getElementById("addForm");
@@ -64,7 +64,7 @@ const ToggleFormHandler = {
     if (this.isFormVisible) {
       // Show form
       form.classList.add("show");
-      button.innerHTML = "❌ Đóng Form";
+      button.innerHTML = "<i class=\"ri-close-line\"></i> Đóng Form";
 
       // Scroll smoothly
       setTimeout(() => {
@@ -83,7 +83,7 @@ const ToggleFormHandler = {
     } else {
       // Hide form
       form.classList.remove("show");
-      button.innerHTML = "➕ Thêm Giao Dịch";
+      button.innerHTML = "<i class=\"ri-add-line\"></i> Thêm Giao Dịch";
 
       // Blur all inputs to close keyboard
       const inputs = form.querySelectorAll("input, select, textarea");
@@ -111,7 +111,7 @@ const ToggleFormHandler = {
   },
 
   handleInitialState() {
-    // ✅ FIX: Dùng matchMedia để đồng bộ với CSS media queries
+    // FIX: Dùng matchMedia để đồng bộ với CSS media queries
     // Điều này sẽ hoạt động đúng ngay cả khi user zoom trình duyệt
     const mobileQuery = window.matchMedia("(max-width: 1000px)");
 
@@ -133,7 +133,7 @@ const ToggleFormHandler = {
           button.style.opacity = "1";
           // Chỉ update text khi form đang đóng
           if (!this.isFormVisible) {
-            button.innerHTML = "➕ Thêm Giao Dịch";
+            button.innerHTML = "<i class=\"ri-add-line\"></i> Thêm Giao Dịch";
           }
         }
       } else {
@@ -168,7 +168,7 @@ const ToggleFormHandler = {
     form.classList.remove("show");
 
     if (button) {
-      button.innerHTML = "➕ Thêm Giao Dịch";
+      button.innerHTML = "<i class=\"ri-add-line\"></i> Thêm Giao Dịch";
     }
 
     // Close keyboard

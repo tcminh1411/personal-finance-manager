@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng Ký - Personal Finance Manager</title>
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.8.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 
 <body class="auth-page">
     <div class="auth-container">
-        <h1>📝 Đăng Ký Tài Khoản</h1>
+        <h1><i class="ri-user-add-fill"></i> Đăng Ký Tài Khoản</h1>
 
         <?php
         session_start();

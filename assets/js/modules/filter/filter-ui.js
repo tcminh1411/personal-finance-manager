@@ -13,8 +13,8 @@ const FilterUI = {
 
     btnFilter.disabled = show;
     btnFilter.innerHTML = show
-      ? '<span class="loading-spinner"></span> Đang lọc...'
-      : "🔍 Lọc";
+      ? '<i class="ri-loader-line ri-spin"></i> Đang lọc...'
+      : '<i class="ri-search-line"></i> Lọc';
 
     // Add/remove loading class for styling
     if (show) {
@@ -127,18 +127,19 @@ const FilterUI = {
     infoEl.className = "";
 
     if (status === "error") {
-      infoEl.textContent = `❌ ${message || "Có lỗi xảy ra"}`;
+      infoEl.innerHTML = `<i class="ri-error-warning-line"></i> ${message || "Có lỗi xảy ra"}`;
       infoEl.className = "error";
       return;
     }
 
     if (count > 0) {
-      infoEl.innerHTML = `✅ Tìm thấy <strong>${count}</strong> giao dịch`;
+      infoEl.innerHTML = `<i class="ri-checkbox-circle-line"></i> Tìm thấy <strong>${count}</strong> giao dịch`;
       infoEl.className = "success";
       return;
     }
 
-    infoEl.textContent = "⚠️ Không tìm thấy giao dịch nào";
+    infoEl.innerHTML = `<i class="ri-information-line"></i> Không tìm thấy giao dịch nào`;
+
     infoEl.className = "empty";
   },
 

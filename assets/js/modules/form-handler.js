@@ -32,10 +32,10 @@ const FormHandler = {
   async handleSubmit() {
     const form = document.getElementById("transactionForm");
     const btnSubmit = form.querySelector("button[type='submit']");
-    const originalText = btnSubmit.textContent;
+    const originalText = btnSubmit.innerHTML;
 
     // Show loading state
-    btnSubmit.textContent = "⏳ Đang xử lý...";
+    btnSubmit.innerHTML = "<i class=\"ri-loader-line ri-spin\"></i> Đang xử lý...";
     btnSubmit.disabled = true;
 
     try {
@@ -157,7 +157,7 @@ const FormHandler = {
     const btnSubmit = document.querySelector(
       "#transactionForm button[type='submit']",
     );
-    btnSubmit.innerHTML = "💾 Cập nhật";
+    btnSubmit.innerHTML = "<i class=\"ri-save-line\"></i> Cập nhật";
     btnSubmit.classList.add("btn-warning");
 
     // Scroll to form
@@ -170,7 +170,7 @@ const FormHandler = {
    * @param {string} originalText - Original button text
    */
   resetButton(button, originalText) {
-    button.textContent = originalText;
+    button.innerHTML = originalText;
     button.disabled = false;
   },
 };
