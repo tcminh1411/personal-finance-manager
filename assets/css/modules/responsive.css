@@ -4,6 +4,483 @@
  */
 
 /* ============================================================
+   -3. Ultra Large Desktop (Min-width: 1920px)
+   ============================================================ */
+@media (min-width: 1920px) {
+  main {
+    max-width: 1800px;
+    gap: 50px;
+    padding: 40px 15px;
+  }
+
+  section:not(#addForm) {
+    max-width: 1300px;
+  }
+
+  #addForm {
+    max-width: 520px;
+  }
+
+  section {
+    padding: 40px;
+  }
+
+  header h1 {
+    font-size: 2.5rem;
+  }
+
+  .financial-summary {
+    gap: 30px;
+    margin-bottom: 50px;
+  }
+
+  .summary-card {
+    padding: 22px;
+  }
+
+  .summary-card h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .summary-card .value {
+    font-size: 26px;
+  }
+
+  .charts-container {
+    gap: 35px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chart-wrapper {
+    height: 450px;
+  }
+
+  .chart-card {
+    padding: 32px;
+  }
+
+  .chart-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+  }
+
+  #charts h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+
+  h3 {
+    font-size: 1.45rem;
+  }
+
+  .separator {
+    margin: 50px 0;
+  }
+
+  table {
+    font-size: 16px;
+  }
+
+  th,
+  td {
+    padding: 16px 18px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  label {
+    font-size: 16px;
+    margin-bottom: 11px;
+  }
+
+  input,
+  select {
+    padding: 15px 20px;
+    font-size: 16px;
+  }
+
+  button {
+    padding: 15px 36px;
+    font-size: 16px;
+  }
+
+  .form-buttons .btn,
+  .form-buttons .btn-cancel {
+    max-width: 300px;
+    font-size: 15px;
+    padding: 11px 16px;
+  }
+
+  .filter-row {
+    gap: 18px;
+  }
+
+  .filter-col {
+    min-width: 210px;
+  }
+
+  .date-shortcuts,
+  .filter-actions {
+    gap: 14px;
+  }
+
+  .btn-shortcut,
+  .filter-actions .btn {
+    padding: 12px 28px;
+    font-size: 15px;
+  }
+
+  #filter h3 {
+    font-size: 1.7rem;
+  }
+
+  #pagination {
+    padding: 28px;
+    margin: 35px 0;
+  }
+
+  .pagination-settings {
+    gap: 25px;
+  }
+
+  #pagination-info {
+    font-size: 16px;
+    min-width: 280px;
+  }
+
+  #pagination-controls {
+    gap: 11px;
+  }
+
+  #pagination-controls button {
+    min-width: 44px;
+    padding: 11px 16px;
+    font-size: 15px;
+  }
+}
+
+/* ============================================================
+   -2. Large Desktop (Min-width: 1440px)
+   ============================================================ */
+@media (min-width: 1440px) {
+  main {
+    max-width: 1500px;
+    gap: 40px;
+    padding: 35px 20px;
+  }
+
+  section:not(#addForm) {
+    max-width: 1120px;
+  }
+
+  #addForm {
+    max-width: 480px;
+  }
+
+  section {
+    padding: 35px;
+  }
+
+  header h1 {
+    font-size: 2.2rem;
+  }
+
+  .financial-summary {
+    gap: 25px;
+    margin-bottom: 40px;
+  }
+
+  .summary-card {
+    padding: 18px;
+  }
+
+  .summary-card h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .summary-card .value {
+    font-size: 22px;
+  }
+
+  .charts-container {
+    gap: 30px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chart-wrapper {
+    height: 400px;
+  }
+
+  .chart-card {
+    padding: 28px;
+  }
+
+  .chart-card h3 {
+    font-size: 1.35rem;
+    margin-bottom: 22px;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  .separator {
+    margin: 40px 0;
+  }
+
+  table {
+    font-size: 15px;
+  }
+
+  th,
+  td {
+    padding: 14px 16px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  label {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  input,
+  select {
+    padding: 14px 18px;
+    font-size: 15px;
+  }
+
+  button {
+    padding: 14px 32px;
+    font-size: 15px;
+  }
+
+  .form-buttons .btn,
+  .form-buttons .btn-cancel {
+    max-width: 280px;
+    font-size: 14px;
+  }
+
+  .filter-row {
+    gap: 15px;
+  }
+
+  .filter-col {
+    min-width: 180px;
+  }
+
+  .date-shortcuts,
+  .filter-actions {
+    gap: 12px;
+  }
+
+  .btn-shortcut,
+  .filter-actions .btn {
+    padding: 11px 24px;
+    font-size: 14px;
+  }
+
+  #pagination {
+    padding: 25px;
+    margin: 30px 0;
+  }
+
+  .pagination-settings {
+    gap: 20px;
+  }
+
+  #pagination-info {
+    font-size: 15px;
+    min-width: 250px;
+  }
+
+  #pagination-controls {
+    gap: 10px;
+  }
+
+  #pagination-controls button {
+    min-width: 40px;
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+}
+
+/* ============================================================
+   -1. Large Desktop (Min-width: 1366px)
+   ============================================================ */
+@media (min-width: 1366px) {
+  main {
+    max-width: 1440px;
+    gap: 35px;
+    padding: 30px 15px;
+  }
+
+  section:not(#addForm) {
+    max-width: 1090px;
+  }
+
+  #addForm {
+    max-width: 450px;
+  }
+
+  section {
+    padding: 32px;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  .financial-summary {
+    gap: 22px;
+    margin-bottom: 35px;
+  }
+
+  .summary-card {
+    padding: 16px;
+  }
+
+  .summary-card h3 {
+    font-size: 15px;
+  }
+
+  .summary-card .value {
+    font-size: 20px;
+  }
+
+  .charts-container {
+    gap: 28px;
+  }
+
+  .chart-wrapper {
+    height: 360px;
+  }
+
+  .chart-card h3 {
+    font-size: 1.15rem;
+  }
+
+  h2 {
+    font-size: 1.7rem;
+    margin-bottom: 22px;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  .separator {
+    margin: 35px 0;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  th,
+  td {
+    padding: 13px 15px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  label {
+    font-size: 14px;
+    margin-bottom: 9px;
+  }
+
+  input,
+  select {
+    padding: 13px 16px;
+    font-size: 14px;
+  }
+
+  button {
+    padding: 12px 28px;
+    font-size: 14px;
+  }
+
+  .form-buttons .btn,
+  .form-buttons .btn-cancel {
+    max-width: 260px;
+  }
+
+  #filter h3,
+  #charts h2 {
+    font-size: 1.6rem;
+  }
+
+  .charts-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chart-card {
+    padding: 26px;
+  }
+
+  .filter-row {
+    gap: 14px;
+  }
+
+  .filter-col {
+    min-width: 170px;
+  }
+
+  .date-shortcuts,
+  .filter-actions {
+    gap: 11px;
+  }
+
+  .btn-shortcut,
+  .filter-actions .btn {
+    padding: 10px 22px;
+    font-size: 13px;
+  }
+
+  #pagination {
+    padding: 22px;
+    margin: 28px 0;
+  }
+
+  .pagination-settings {
+    gap: 18px;
+  }
+
+  #pagination-info {
+    font-size: 14px;
+    min-width: 230px;
+  }
+
+  #pagination-controls {
+    gap: 9px;
+  }
+
+  #pagination-controls button {
+    min-width: 38px;
+    padding: 9px 13px;
+    font-size: 13px;
+  }
+}
+
+/* ============================================================
    0. Medium Desktop - Auto hide form when too narrow
    ============================================================ */
 @media (max-width: 1200px) {

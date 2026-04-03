@@ -126,6 +126,66 @@ button.btn-warning:hover {
   margin: 15px auto 0;
 }
 
+.form-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.form-buttons .btn,
+.form-buttons .btn-cancel {
+  min-width: 0;
+  max-width: 250px;
+  height: 36px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.form-buttons .btn {
+  flex: 0 1 auto;
+}
+
+.form-buttons .btn-cancel {
+  width: 100%;
+  justify-content: center;
+  order: 2;
+}
+
+.form-buttons .btn-cancel {
+  background-color: #95a5a6 !important;
+  border: 1px solid #7f8c8d;
+  font-size: 13px;
+}
+
+.form-buttons .btn-cancel:hover {
+  background-color: #7f8c8d !important;
+}
+
+.form-buttons .btn i,
+.form-buttons .btn-cancel i {
+  font-size: 14px;
+  margin-right: 6px;
+}
+
+@media (max-width: 1000px) {
+  .form-buttons {
+    flex-wrap: wrap;
+  }
+
+  .form-buttons .btn,
+  .form-buttons .btn-cancel {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
+
 /* Data Table Actions */
 td button {
   padding: 6px 12px;
