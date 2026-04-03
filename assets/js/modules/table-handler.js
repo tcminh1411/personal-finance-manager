@@ -32,7 +32,7 @@ const TableHandler = {
         const id = btnEdit.dataset.id;
         const row = btnEdit.closest("tr");
         const categoryId = btnEdit.dataset.category;
-        FormHandler.fillFormForEdit(id, row, categoryId);
+        FormHandler.setEditMode(id, row, categoryId);
       }
     });
   },
@@ -159,8 +159,8 @@ const TableHandler = {
         <td>
           <button class="btn-edit" data-id="${tx.id}" data-category="${
             tx.category_id || ""
-          }">Sửa</button>
-          <button class="btn-delete" data-id="${tx.id}">Xóa</button>
+          }"><i class="ri-edit-line"></i> Sửa</button>
+          <button class="btn-delete" data-id="${tx.id}"><i class="ri-delete-bin-line"></i> Xóa</button>
         </td>
       </tr>
     `;

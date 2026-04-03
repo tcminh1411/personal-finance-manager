@@ -3,12 +3,18 @@
  * Handles transaction form submission (Create & Update)
  */
 const FormHandler = {
+  isEditMode: false,
+  editId: null,
+  defaultTitle: "Thêm Giao Dịch",
+
   /**
    * Initialize form handler
-   * Sets up form submit event listener
+   * Sets up form event listeners
    */
   init() {
     this.setupFormSubmit();
+    this.setupCancelButton();
+    this.resetFormMode();
   },
 
   /**
@@ -21,6 +27,18 @@ const FormHandler = {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       await this.handleSubmit();
+    });
+  },
+
+  /**
+   * Setup cancel edit button event listener
+   */
+  setupCancelButton() {
+    const btnCancel = document.getElementById("btnCancelEdit");
+    if (!btnCancel) return;
+
+    btnCancel.addEventListener("click", () => {
+      this.resetFormMode();
     });
   },
 
@@ -80,6 +98,7 @@ const FormHandler = {
 
       if (data.success) {
         Utils.showNotification(data.message, "success");
+        this.resetFormMode();
         setTimeout(() => window.location.reload(), 1500);
       } else {
         Utils.showNotification("Lỗi: " + data.message, "error");
@@ -95,45 +114,80 @@ const FormHandler = {
   },
 
   /**
+   * Switch form into edit mode and prefill values
+   * @param {number|string} id
+   * @param {HTMLTableRowElement} row
+   * @param {number|string|null} categoryId
+   */
+  setEditMode(id, row, categoryId) {
+    const formHeader = document.querySelector("#addForm h2");
+    if (formHeader) {
+      formHeader.textContent = "Sửa Giao Dịch";
+    }
+
+    this.isEditMode = true;
+    this.editId = id;
+
+    this.fillFormForEdit(id, row, categoryId);
+
+    const btnSubmit = document.querySelector("#transactionForm button[type='submit']");
+    if (btnSubmit) {
+      btnSubmit.innerHTML = "<i class=\"ri-save-line\"></i> Cập nhật";
+      btnSubmit.classList.add("btn-warning");
+    }
+
+    const btnCancel = document.getElementById("btnCancelEdit");
+    if (btnCancel) {
+      btnCancel.style.display = "inline-flex";
+    }
+
+    // Show form only on mobile; guard visibility
+    const isMobile = window.matchMedia("(max-width: 1000px)").matches;
+    if (isMobile) {
+      if (typeof ToggleFormHandler !== "undefined" && typeof ToggleFormHandler.showForm === "function") {
+        ToggleFormHandler.showForm();
+      }
+    }
+
+    setTimeout(() => {
+      const addForm = document.getElementById("addForm");
+      if (addForm && addForm.offsetParent !== null) {
+        addForm.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 50);
+  },
+
+  /**
    * Fill form with transaction data for editing
-   * @param {number|string} id - Transaction ID
-   * @param {HTMLTableRowElement} row - Table row element containing data
-   * @param {number|string|null} categoryId - Category ID
    */
   fillFormForEdit(id, row, categoryId) {
     const cells = row.cells;
 
-    // Extract data from table row
-    const dateRaw = cells[1].innerText.trim(); // DD/MM/YYYY format
+    const dateRaw = cells[1].innerText.trim();
     const typeText = cells[2].innerText.trim();
     const amountRaw = cells[4].innerText.trim();
     const description = cells[5].innerText.trim();
 
-    // Convert date from DD/MM/YYYY to YYYY-MM-DD
     let dateISO = "";
-
-    if (
-      typeof Utils !== "undefined" &&
-      typeof Utils.convertDateToISO === "function"
-    ) {
+    if (typeof Utils !== "undefined" && typeof Utils.convertDateToISO === "function") {
       dateISO = Utils.convertDateToISO(dateRaw);
     }
 
-    // Fallback date conversion if Utils failed
     if (!dateISO) {
       const parts = dateRaw.split("/");
-
       if (parts.length === 3) {
         const day = parts[0].padStart(2, "0");
         const month = parts[1].padStart(2, "0");
         const year = parts[2];
         dateISO = `${year}-${month}-${day}`;
-      } else {
+      } else if (typeof Utils !== "undefined" && typeof Utils.getTodayISO === "function") {
         dateISO = Utils.getTodayISO();
+      } else {
+        const now = new Date();
+        dateISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
       }
     }
 
-    // Fill form fields
     document.getElementById("transaction_id").value = id;
     document.getElementById("amount").value = Utils.parseMoney(amountRaw);
 
@@ -141,27 +195,54 @@ const FormHandler = {
     document.getElementById("type").value = isIncome ? "income" : "expense";
 
     document.getElementById("category").value = categoryId || "";
-
-    // Trigger type change to filter categories
     document.getElementById("type").dispatchEvent(new Event("change"));
 
-    // Re-set category after filter
     setTimeout(() => {
       document.getElementById("category").value = categoryId || "";
     }, 50);
 
     document.getElementById("description").value = description;
     document.getElementById("date").value = dateISO;
+  },
 
-    // Update submit button
-    const btnSubmit = document.querySelector(
-      "#transactionForm button[type='submit']",
-    );
-    btnSubmit.innerHTML = "<i class=\"ri-save-line\"></i> Cập nhật";
-    btnSubmit.classList.add("btn-warning");
+  /**
+   * Reset form back to default (add) mode
+   */
+  resetFormMode() {
+    this.isEditMode = false;
+    this.editId = null;
 
-    // Scroll to form
-    document.getElementById("addForm").scrollIntoView({ behavior: "smooth" });
+    const formHeader = document.querySelector("#addForm h2");
+    if (formHeader) {
+      formHeader.textContent = this.defaultTitle;
+    }
+
+    const form = document.getElementById("transactionForm");
+    if (form) {
+      form.reset();
+      const defaultDate =
+        typeof Utils !== "undefined" && typeof Utils.getTodayISO === "function"
+          ? Utils.getTodayISO()
+          : new Date().toISOString().slice(0, 10);
+      const dateInput = document.getElementById("date");
+      if (dateInput) dateInput.value = defaultDate;
+    }
+
+    const btnSubmit = document.querySelector("#transactionForm button[type='submit']");
+    if (btnSubmit) {
+      btnSubmit.innerHTML = "<i class=\"ri-add-line\"></i> Thêm";
+      btnSubmit.disabled = false;
+      btnSubmit.classList.remove("btn-warning");
+    }
+
+    const btnCancel = document.getElementById("btnCancelEdit");
+    if (btnCancel) {
+      btnCancel.style.display = "none";
+    }
+
+    if (typeof ToggleFormHandler !== "undefined" && typeof ToggleFormHandler.hideForm === "function") {
+      ToggleFormHandler.hideForm();
+    }
   },
 
   /**

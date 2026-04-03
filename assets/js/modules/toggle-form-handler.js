@@ -46,7 +46,9 @@ const ToggleFormHandler = {
     button.addEventListener(
       "touchstart",
       (e) => {
-        e.preventDefault();
+        if (e.cancelable) {
+          e.preventDefault();
+        }
         this.toggleForm();
       },
       { passive: false },
