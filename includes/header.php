@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personal Finance Manager</title>
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.8.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 
 <body>
@@ -15,10 +16,10 @@
             <?php if (isset($_SESSION['username'])): ?>
                 <div class="header-user-section">
                     <span class="user-info">
-                        👤 <?= htmlspecialchars($_SESSION['username']) ?>
+                        <i class="ri-user-fill user-icon"></i> <?= htmlspecialchars($_SESSION['username']) ?>
                     </span>
                     <a href="auth/logout.php" class="logout-btn">
-                        🚪 Đăng xuất
+                        <i class="ri-logout-circle-line logout-icon"></i> Đăng xuất
                     </a>
                 </div>
             <?php endif; ?>

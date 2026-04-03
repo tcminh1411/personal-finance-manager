@@ -70,7 +70,6 @@ try {
 
   $totalIncome = $totals['total_income'] ?? 0;
   $totalExpense = $totals['total_expense'] ?? 0;
-
 } catch (PDOException $e) {
   die("Lỗi lấy dữ liệu: " . $e->getMessage());
 }
@@ -86,7 +85,8 @@ require_once 'includes/header.php';
 
       <div class="form-group">
         <label for="amount">Số tiền</label>
-        <input type="number" id="amount" name="amount" placeholder="Nhập số tiền (VD: 50000)" min="0" required />
+        <input type="number" id="amount" name="amount" placeholder="Nhập số tiền (VD: 50000)" min="0"
+          required />
       </div>
 
       <div class="form-group">
@@ -112,7 +112,8 @@ require_once 'includes/header.php';
 
       <div class="form-group">
         <label for="description">Mô tả</label>
-        <input type="text" id="description" name="description" placeholder="Nhập nội dung (VD: Ăn sáng)" required />
+        <input type="text" id="description" name="description" placeholder="Nhập nội dung (VD: Ăn sáng)"
+          required />
       </div>
 
       <div class="form-group">
@@ -120,13 +121,13 @@ require_once 'includes/header.php';
         <input type="date" id="date" name="date" required />
       </div>
 
-      <button type="submit" class="btn">➕ ADD</button>
+      <button type="submit" class="btn"> ADD</button>
       <div id="notification"></div>
     </form>
   </section>
 
   <section>
-    <h2>Quản lý</h2>
+    <h2><i class="ri-star-fill"></i>Quản lý</h2>
 
     <div class="financial-summary">
       <div class="summary-card">
@@ -153,7 +154,7 @@ require_once 'includes/header.php';
 
     <!-- Charts Section -->
     <section id="charts">
-      <h2>📊 Phân Tích Chi Tiêu</h2>
+      <h2><i class="ri-bar-chart-box-line"></i> Phân Tích Chi Tiêu</h2>
       <div class="charts-container">
         <!-- Pie Chart -->
         <div class="chart-card">
@@ -187,7 +188,7 @@ require_once 'includes/header.php';
       <!-- Search box -->
       <div class="filter-row">
         <div class="filter-col-full">
-          <input type="text" id="filter-search" placeholder="🔍 Tìm kiếm theo mô tả..." />
+          <input type="text" id="filter-search" placeholder="Tìm kiếm theo mô tả..." />
         </div>
       </div>
 
@@ -228,9 +229,10 @@ require_once 'includes/header.php';
       </div>
 
       <div class="filter-actions">
-        <button type="button" class="btn btn-filter" id="btnFilter">🔍 Lọc</button>
-        <button type="button" class="btn btn-export" id="btnExport">📥 Xuất CSV</button>
-        <button type="button" class="btn btn-reset" id="btnReset">🔄 Reset</button>
+        <button type="button" class="btn btn-search" id="btnSearch"> <i class="ri-search-line"></i>Lọc</button>
+        <button type="button" class="btn btn-export" id="btnExport"><i class="ri-file-download-line"></i> Xuất
+          CSV</button>
+        <button type="button" class="btn btn-reset" id="btnReset"><i class="ri-refresh-line"></i> Reset</button>
       </div>
 
       <div class="filter-result-box">
@@ -256,7 +258,8 @@ require_once 'includes/header.php';
 
         <div id="pagination-info">
           <?php if ($totalRecords > 0): ?>
-            Hiển thị <?= min(($page - 1) * $limit + 1, $totalRecords) ?>-<?= min($page * $limit, $totalRecords) ?>
+            Hiển thị
+            <?= min(($page - 1) * $limit + 1, $totalRecords) ?>-<?= min($page * $limit, $totalRecords) ?>
             trong tổng số <?= $totalRecords ?> giao dịch
           <?php else: ?>
             Không có giao dịch
@@ -275,11 +278,11 @@ require_once 'includes/header.php';
               $start = max(1, $end - 4);
             }
             for ($i = $start; $i <= $end; $i++):
-              ?>
+          ?>
               <button class="btn-page <?= $i == $page ? 'active' : '' ?>" data-page="<?= $i ?>">
                 <?= $i ?>
               </button>
-              <?php
+          <?php
             endfor;
           }
           ?>
