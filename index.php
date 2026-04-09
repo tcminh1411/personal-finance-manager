@@ -22,56 +22,56 @@ $totalIncome = 0;
 $totalExpense = 0;
 
 try {
-  // Get categories list
-  $sqlCat = "SELECT id, name, type FROM categories ORDER BY type, name";
-  $stmtCat = $pdo->prepare($sqlCat);
-  $stmtCat->execute();
-  $categories = $stmtCat->fetchAll();
+    // Get categories list
+    $sqlCat = "SELECT id, name, type FROM categories ORDER BY type, name";
+    $stmtCat = $pdo->prepare($sqlCat);
+    $stmtCat->execute();
+    $categories = $stmtCat->fetchAll();
 
-  // Create id -> name map
-  foreach ($categories as $cat) {
-    $categoryMap[$cat['id']] = [
-      'name' => $cat['name'],
-      'type' => $cat['type']
-    ];
-  }
+    // Create id -> name map
+    foreach ($categories as $cat) {
+        $categoryMap[$cat['id']] = [
+            'name' => $cat['name'],
+            'type' => $cat['type']
+        ];
+    }
 
-  // Count total records for pagination
-  $sqlCount = "SELECT COUNT(*) as total FROM transactions WHERE user_id = :user_id";
-  $stmtCount = $pdo->prepare($sqlCount);
-  $stmtCount->execute([':user_id' => $current_user_id]);
-  $countResult = $stmtCount->fetch();
-  $totalRecords = (int) ($countResult['total'] ?? 0);
-  $totalPages = $totalRecords > 0 ? (int) ceil($totalRecords / $limit) : 0;
+    // Count total records for pagination
+    $sqlCount = "SELECT COUNT(*) as total FROM transactions WHERE user_id = :user_id";
+    $stmtCount = $pdo->prepare($sqlCount);
+    $stmtCount->execute([':user_id' => $current_user_id]);
+    $countResult = $stmtCount->fetch();
+    $totalRecords = (int) ($countResult['total'] ?? 0);
+    $totalPages = $totalRecords > 0 ? (int) ceil($totalRecords / $limit) : 0;
 
-  // Fetch transactions for current user
-  $sql = "SELECT * FROM transactions
+    // Fetch transactions for current user
+    $sql = "SELECT * FROM transactions
             WHERE user_id = :user_id
             ORDER BY transaction_date DESC, id DESC
             LIMIT :limit OFFSET :offset";
 
-  $stmt = $pdo->prepare($sql);
-  $stmt->bindValue(':user_id', $current_user_id, PDO::PARAM_INT);
-  $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-  $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-  $stmt->execute();
-  $transactions = $stmt->fetchAll();
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':user_id', $current_user_id, PDO::PARAM_INT);
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    $transactions = $stmt->fetchAll();
 
-  // Calculate totals for CURRENT USER only
-  $sqlTotal = "SELECT
+    // Calculate totals for CURRENT USER only
+    $sqlTotal = "SELECT
         SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as total_income,
         SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as total_expense
         FROM transactions
         WHERE user_id = :user_id";
 
-  $stmtTotal = $pdo->prepare($sqlTotal);
-  $stmtTotal->execute([':user_id' => $current_user_id]);
-  $totals = $stmtTotal->fetch();
+    $stmtTotal = $pdo->prepare($sqlTotal);
+    $stmtTotal->execute([':user_id' => $current_user_id]);
+    $totals = $stmtTotal->fetch();
 
-  $totalIncome = $totals['total_income'] ?? 0;
-  $totalExpense = $totals['total_expense'] ?? 0;
+    $totalIncome = $totals['total_income'] ?? 0;
+    $totalExpense = $totals['total_expense'] ?? 0;
 } catch (PDOException $e) {
-  die("Lỗi lấy dữ liệu: " . $e->getMessage());
+    die("Lỗi lấy dữ liệu: " . $e->getMessage());
 }
 
 require_once 'includes/header.php';
@@ -103,9 +103,9 @@ require_once 'includes/header.php';
                 <select id="category" name="category_id">
                     <option value="">-- Chọn danh mục (tùy chọn) --</option>
                     <?php foreach ($categories as $cat): ?>
-                    <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
-                        <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
-                    </option>
+                        <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
+                            <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -131,30 +131,33 @@ require_once 'includes/header.php';
     </section>
 
     <section>
-        <h2><i class="ri-star-fill"></i>Quản lý</h2>
+        <h2 class="font-extrabold text-2xl text-center mb-5 text-gray-600"><i class="ri-star-fill"></i>Quản lý</h2>
 
-        <div class="financial-summary">
-            <div class="summary-card">
-                <h3>Tổng Thu</h3>
-                <p class="value text-green">
+        <div class="grid grid-cols-3 gap-5 mb-8 text-center">
+            <div
+                class="p-3 bg-gradient-to-br from-[#f8f9fa] to-[#e9ecef] border border-[#e9ecef] rounded-xl transition-transform transition-shadow duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
+                <h3 class="font-bold text-gray-500">Tổng Thu</h3>
+                <p class="mt-3 text-lg font-bold text-green-600">
                     <?= formatMoney($totalIncome ?? 0) ?>
                 </p>
             </div>
-            <div class="summary-card">
-                <h3>Tổng Chi</h3>
-                <p class="value text-red">
+            <div
+                class="p-3 bg-gradient-to-br from-[#f8f9fa] to-[#e9ecef] border border-[#e9ecef] rounded-xl transition-transform transition-shadow duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
+                <h3 class="font-bold text-gray-500">Tổng Chi</h3>
+                <p class="mt-3 text-lg font-bold text-red-600">
                     <?= formatMoney($totalExpense ?? 0) ?>
                 </p>
             </div>
-            <div class="summary-card">
-                <h3>Số Dư</h3>
-                <p class="value text-dark">
+            <div
+                class="p-3 bg-gradient-to-br from-[#f8f9fa] to-[#e9ecef] border border-[#e9ecef] rounded-xl transition-transform transition-shadow duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
+                <h3 class="font-bold text-gray-500">Số Dư</h3>
+                <p class="mt-3 text-lg font-bold text-blue-600">
                     <?= formatMoney(($totalIncome ?? 0) - ($totalExpense ?? 0)) ?>
                 </p>
             </div>
         </div>
 
-        <hr class="separator" />
+        <div class="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent my-5"></div>
 
         <!-- Charts Section -->
         <section id="charts">
@@ -224,9 +227,9 @@ require_once 'includes/header.php';
                     <select id="filter-category">
                         <option value="">-- Tất cả danh mục --</option>
                         <?php foreach ($categories as $cat): ?>
-                        <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
-                            <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
-                        </option>
+                            <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
+                                <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -262,35 +265,35 @@ require_once 'includes/header.php';
 
                 <div id="pagination-info">
                     <?php if ($totalRecords > 0): ?>
-                    Hiển thị
-                    <?= min(($page - 1) * $limit + 1, $totalRecords) ?>-<?= min($page * $limit, $totalRecords) ?>
-                    trong tổng số <?= $totalRecords ?> giao dịch
+                        Hiển thị
+                        <?= min(($page - 1) * $limit + 1, $totalRecords) ?>-<?= min($page * $limit, $totalRecords) ?>
+                        trong tổng số <?= $totalRecords ?> giao dịch
                     <?php else: ?>
-                    Không có giao dịch
+                        Không có giao dịch
                     <?php endif; ?>
                 </div>
             </div>
 
             <div id="pagination-controls">
                 <?php if ($totalPages > 0): ?>
-                <button class="btn-prev" <?= $page <= 1 ? 'disabled' : '' ?>>‹</button>
-                <?php
-          if ($totalPages > 1) {
-            $start = max(1, $page - 2);
-            $end = min($totalPages, $page + 2);
-            if ($end - $start < 4) {
-              $start = max(1, $end - 4);
-            }
-            for ($i = $start; $i <= $end; $i++):
-          ?>
-                <button class="btn-page <?= $i == $page ? 'active' : '' ?>" data-page="<?= $i ?>">
-                    <?= $i ?>
-                </button>
-                <?php
-            endfor;
-          }
-          ?>
-                <button class="btn-next" <?= $page >= $totalPages ? 'disabled' : '' ?>>›</button>
+                    <button class="btn-prev" <?= $page <= 1 ? 'disabled' : '' ?>>‹</button>
+                    <?php
+                    if ($totalPages > 1) {
+                        $start = max(1, $page - 2);
+                        $end = min($totalPages, $page + 2);
+                        if ($end - $start < 4) {
+                            $start = max(1, $end - 4);
+                        }
+                        for ($i = $start; $i <= $end; $i++):
+                    ?>
+                            <button class="btn-page <?= $i == $page ? 'active' : '' ?>" data-page="<?= $i ?>">
+                                <?= $i ?>
+                            </button>
+                    <?php
+                        endfor;
+                    }
+                    ?>
+                    <button class="btn-next" <?= $page >= $totalPages ? 'disabled' : '' ?>>›</button>
                 <?php endif; ?>
             </div>
         </div>
@@ -311,41 +314,41 @@ require_once 'includes/header.php';
                 </thead>
                 <tbody id="txTableBody">
                     <?php if (count($transactions) > 0): ?>
-                    <?php foreach ($transactions as $index => $tx): ?>
-                    <tr>
-                        <td><?= $index + 1 ?></td>
-                        <td><?= date('d/m/Y', strtotime($tx['transaction_date'])) ?></td>
-                        <td>
-                            <?php if ($tx['type'] === 'income'): ?>
-                            <span class="text-green">Thu nhập</span>
-                            <?php else: ?>
-                            <span class="text-red">Chi tiêu</span>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php
-                  if ($tx['category_id'] && isset($categoryMap[$tx['category_id']])) {
-                    echo e($categoryMap[$tx['category_id']]['name']);
-                  } else {
-                    echo '<span class="category-unset">Chưa phân loại</span>';
-                  }
-                  ?>
-                        </td>
-                        <td class="text-dark"><?= formatMoney($tx['amount']) ?></td>
-                        <td><?= e($tx['description']) ?></td>
-                        <td>
-                            <button class="btn btn-edit" data-id="<?= $tx['id'] ?>"
-                                data-category="<?= $tx['category_id'] ?? '' ?>"><i class="ri-edit-line"></i>
-                                Sửa</button>
-                            <button class="btn btn-delete" data-id="<?= $tx['id'] ?>"><i class="ri-delete-bin-line"></i>
-                                Xóa</button>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
+                        <?php foreach ($transactions as $index => $tx): ?>
+                            <tr>
+                                <td><?= $index + 1 ?></td>
+                                <td><?= date('d/m/Y', strtotime($tx['transaction_date'])) ?></td>
+                                <td>
+                                    <?php if ($tx['type'] === 'income'): ?>
+                                        <span class="text-green">Thu nhập</span>
+                                    <?php else: ?>
+                                        <span class="text-red">Chi tiêu</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php
+                                    if ($tx['category_id'] && isset($categoryMap[$tx['category_id']])) {
+                                        echo e($categoryMap[$tx['category_id']]['name']);
+                                    } else {
+                                        echo '<span class="category-unset">Chưa phân loại</span>';
+                                    }
+                                    ?>
+                                </td>
+                                <td class="text-dark"><?= formatMoney($tx['amount']) ?></td>
+                                <td><?= e($tx['description']) ?></td>
+                                <td>
+                                    <button class="btn btn-edit" data-id="<?= $tx['id'] ?>"
+                                        data-category="<?= $tx['category_id'] ?? '' ?>"><i class="ri-edit-line"></i>
+                                        Sửa</button>
+                                    <button class="btn btn-delete" data-id="<?= $tx['id'] ?>"><i class="ri-delete-bin-line"></i>
+                                        Xóa</button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                     <?php else: ?>
-                    <tr>
-                        <td colspan="7" class="empty-row">Chưa có giao dịch.</td>
-                    </tr>
+                        <tr>
+                            <td colspan="7" class="empty-row">Chưa có giao dịch.</td>
+                        </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
