@@ -1,74 +1,57 @@
 <?php
-// Protect this page - require login
 require_once 'auth/check-auth.php';
 require_once 'config/database.php';
 require_once 'includes/helpers.php';
 
-// Get current user ID from session
 $current_user_id = $_SESSION['user_id'];
 
-// ===== PAGINATION - GET FROM URL =====
-$page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
-$limit = isset($_GET['limit']) ? max(1, min(100, (int) $_GET['limit'])) : 10;
+$page  = isset($_GET['page'])  ? max(1, (int) $_GET['page'])              : 1;
+$limit = isset($_GET['limit']) ? max(1, min(100, (int) $_GET['limit']))   : 10;
 $offset = ($page - 1) * $limit;
 
-// ===== FIX: Initialize variables BEFORE try block =====
 $totalRecords = 0;
 $totalPages = 0;
-$categoryMap = [];
+$categoryMap  = [];
 $categories = [];
 $transactions = [];
-$totalIncome = 0;
+$totalIncome  = 0;
 $totalExpense = 0;
 
 try {
-    // Get categories list
     $sqlCat = "SELECT id, name, type FROM categories ORDER BY type, name";
     $stmtCat = $pdo->prepare($sqlCat);
     $stmtCat->execute();
     $categories = $stmtCat->fetchAll();
-
-    // Create id -> name map
     foreach ($categories as $cat) {
-        $categoryMap[$cat['id']] = [
-            'name' => $cat['name'],
-            'type' => $cat['type']
-        ];
+        $categoryMap[$cat['id']] = ['name' => $cat['name'], 'type' => $cat['type']];
     }
 
-    // Count total records for pagination
     $sqlCount = "SELECT COUNT(*) as total FROM transactions WHERE user_id = :user_id";
     $stmtCount = $pdo->prepare($sqlCount);
     $stmtCount->execute([':user_id' => $current_user_id]);
-    $countResult = $stmtCount->fetch();
+    $countResult  = $stmtCount->fetch();
     $totalRecords = (int) ($countResult['total'] ?? 0);
-    $totalPages = $totalRecords > 0 ? (int) ceil($totalRecords / $limit) : 0;
+    $totalPages   = $totalRecords > 0 ? (int) ceil($totalRecords / $limit) : 0;
 
-    // Fetch transactions for current user
     $sql = "SELECT * FROM transactions
             WHERE user_id = :user_id
             ORDER BY transaction_date DESC, id DESC
             LIMIT :limit OFFSET :offset";
-
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':user_id', $current_user_id, PDO::PARAM_INT);
-    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->bindValue(':limit',   $limit,           PDO::PARAM_INT);
+    $stmt->bindValue(':offset',  $offset,          PDO::PARAM_INT);
     $stmt->execute();
     $transactions = $stmt->fetchAll();
 
-    // Calculate totals for CURRENT USER only
     $sqlTotal = "SELECT
-        SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as total_income,
-        SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as total_expense
-        FROM transactions
-        WHERE user_id = :user_id";
-
+        SUM(CASE WHEN type='income'  THEN amount ELSE 0 END) as total_income,
+        SUM(CASE WHEN type='expense' THEN amount ELSE 0 END) as total_expense
+        FROM transactions WHERE user_id = :user_id";
     $stmtTotal = $pdo->prepare($sqlTotal);
     $stmtTotal->execute([':user_id' => $current_user_id]);
-    $totals = $stmtTotal->fetch();
-
-    $totalIncome = $totals['total_income'] ?? 0;
+    $totals      = $stmtTotal->fetch();
+    $totalIncome  = $totals['total_income']  ?? 0;
     $totalExpense = $totals['total_expense'] ?? 0;
 } catch (PDOException $e) {
     die("Lỗi lấy dữ liệu: " . $e->getMessage());
@@ -76,279 +59,331 @@ try {
 
 require_once 'includes/header.php';
 ?>
+<main class="px-4 py-5 max-w-7xl mx-auto md:px-6 md:py-6">
 
-<main>
-    <section id="addForm">
-        <h2>Thêm Giao Dịch</h2>
-        <form id="transactionForm" novalidate>
+    <section id="addForm" class="bg-white border border-gray-200 rounded-2xl p-4 mb-5 md:p-6 scroll-mt-40">
+
+        <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">Thêm
+            Giao Dịch</h2>
+
+        <form id="transactionForm" novalidate class="flex flex-col gap-4">
             <input type="hidden" id="transaction_id" name="id" value="">
-
-            <div class="form-group">
-                <label for="amount">Số tiền</label>
-                <input type="number" id="amount" name="amount" placeholder="Nhập số tiền (VD: 50000)" min="0"
-                    required />
+            <div class="flex flex-col gap-1">
+                <label for="amount" class="text-base font-medium text-gray-700">Số tiền</label>
+                <input type="number" id="amount" name="amount" placeholder="Nhập số tiền (VD: 50000)" min="0" required
+                    class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base
+                              focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
-            <div class="form-group">
-                <label for="type">Loại</label>
-                <select id="type" name="type" required>
+            <div class="flex flex-col gap-1">
+                <label for="type" class="text-base font-medium text-gray-700">Loại</label>
+                <select id="type" name="type" required class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
                     <option value="">-- Chọn loại --</option>
                     <option value="income">Thu nhập</option>
                     <option value="expense">Chi tiêu</option>
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="category">Danh mục</label>
-                <select id="category" name="category_id">
+            <div class="flex flex-col gap-1">
+                <label for="category" class="text-base font-medium text-gray-700">Danh mục</label>
+                <select id="category" name="category_id" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
                     <option value="">-- Chọn danh mục (tùy chọn) --</option>
                     <?php foreach ($categories as $cat): ?>
-                        <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
-                            <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
-                        </option>
+                    <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
+                        <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
+                    </option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="description">Mô tả</label>
+            <div class="flex flex-col gap-1">
+                <label for="description" class="text-base font-medium text-gray-700">Mô tả</label>
                 <input type="text" id="description" name="description" placeholder="Nhập nội dung (VD: Ăn sáng)"
-                    required />
+                    required class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base
+                              focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
-            <div class="form-group">
-                <label for="date">Ngày</label>
-                <input type="date" id="date" name="date" required />
+            <div class="flex flex-col gap-1">
+                <label for="date" class="text-base font-medium text-gray-700">Ngày</label>
+                <input type="date" id="date" name="date" required class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base
+                              focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
-            <div class="form-buttons">
-                <button type="submit" class="btn" id="btnFormSubmit"><i class="ri-add-line"></i> Thêm</button>
-                <button type="button" class="btn btn-cancel" id="btnCancelEdit" style="display:none;"><i
-                        class="ri-arrow-go-back-line"></i> Hủy</button>
-            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium text-base
+                           hover:bg-blue-700 active:scale-[0.98] transition-all mt-1">
+                Thêm giao dịch
+            </button>
+            <button type="button" id="btnCancelEdit" class="w-full bg-gray-200 text-gray-800 py-2.5 rounded-lg font-medium text-base
+                           hover:bg-gray-300 transition-all mt-2" style="display:none;">
+                Hủy chỉnh sửa
+            </button>
+
             <div id="notification"></div>
         </form>
     </section>
+    <div class="border-t border-gray-100 my-5"></div>
+    <section id="manager" class="scroll-mt-40">
+        <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">
+            <i class="ri-star-fill text-yellow-400 text-lg"></i>
+            Quản lý
+        </h2>
 
-    <section>
-        <h2 class="font-extrabold text-2xl text-center mb-5 text-gray-600"><i class="ri-star-fill"></i>Quản lý</h2>
+        <div class="grid grid-cols-1 gap-3 mb-5 sm:grid-cols-3">
 
-        <div class="grid grid-cols-3 gap-5 mb-8 text-center">
-            <div
-                class="p-3 bg-gradient-to-br from-[#f8f9fa] to-[#e9ecef] border border-[#e9ecef] rounded-xl transition-transform transition-shadow duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
-                <h3 class="font-bold text-gray-500">Tổng Thu</h3>
-                <p class="mt-3 text-lg font-bold text-green-600">
+            <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
+                <h3 class="text-base text-gray-500 mb-1">Tổng Thu</h3>
+                <p class="text-xl font-medium text-green-600">
                     <?= formatMoney($totalIncome ?? 0) ?>
                 </p>
             </div>
-            <div
-                class="p-3 bg-gradient-to-br from-[#f8f9fa] to-[#e9ecef] border border-[#e9ecef] rounded-xl transition-transform transition-shadow duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
-                <h3 class="font-bold text-gray-500">Tổng Chi</h3>
-                <p class="mt-3 text-lg font-bold text-red-600">
+
+            <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
+                <h3 class="text-base text-gray-500 mb-1">Tổng Chi</h3>
+                <p class="text-xl font-medium text-red-500">
                     <?= formatMoney($totalExpense ?? 0) ?>
                 </p>
             </div>
-            <div
-                class="p-3 bg-gradient-to-br from-[#f8f9fa] to-[#e9ecef] border border-[#e9ecef] rounded-xl transition-transform transition-shadow duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
-                <h3 class="font-bold text-gray-500">Số Dư</h3>
-                <p class="mt-3 text-lg font-bold text-blue-600">
+
+            <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
+                <h3 class="text-base text-gray-500 mb-1">Số Dư</h3>
+                <p class="text-xl font-medium text-gray-800">
                     <?= formatMoney(($totalIncome ?? 0) - ($totalExpense ?? 0)) ?>
                 </p>
             </div>
         </div>
+    </section>
+    <div class="border-t border-gray-100 my-5"></div>
+    <section id="charts" class="mb-5">
+        <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">
+            <i class="ri-bar-chart-box-line"></i> Phân Tích Chi Tiêu
+        </h2>
 
-        <div class="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent my-5"></div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 
-        <!-- Charts Section -->
-        <section id="charts">
-            <h2><i class="ri-bar-chart-box-line"></i> Phân Tích Chi Tiêu</h2>
-            <div class="charts-container">
-                <!-- Pie Chart -->
-                <div class="chart-card">
-                    <h3>Chi Tiêu Theo Danh Mục</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="expensePieChart"></canvas>
-                    </div>
-                    <p class="chart-description">
-                        Biểu đồ tròn thể hiện tỷ lệ chi tiêu theo từng danh mục
-                    </p>
+            <div class="bg-white border border-gray-200 rounded-xl p-4">
+                <h3 class="text-center text-base font-medium text-gray-700 mb-3">Chi Tiêu Theo Danh Mục</h3>
+                <div class="relative h-48 md:h-56">
+                    <canvas id="expensePieChart"></canvas>
                 </div>
-
-                <!-- Bar Chart -->
-                <div class="chart-card">
-                    <h3>Thu Chi Theo Tháng</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="incomeExpenseBarChart"></canvas>
-                    </div>
-                    <p class="chart-description">
-                        So sánh thu nhập và chi tiêu trong 12 tháng gần nhất
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <hr class="separator" />
-
-        <div id="filter">
-            <h3>Lọc & Tìm kiếm</h3>
-
-            <!-- Search box -->
-            <div class="filter-row">
-                <div class="filter-col-full">
-                    <input type="text" id="filter-search" placeholder="Tìm kiếm theo mô tả..." />
-                </div>
+                <p class="text-sm text-gray-400 text-center mt-2">
+                    Biểu đồ tròn thể hiện tỷ lệ chi tiêu theo từng danh mục
+                </p>
             </div>
 
-            <!-- Date Range Shortcuts -->
-            <div class="date-shortcuts">
-                <button type="button" class="btn btn-shortcut" data-range="today">Hôm nay</button>
-                <button type="button" class="btn btn-shortcut" data-range="week">Tuần này</button>
-                <button type="button" class="btn btn-shortcut" data-range="month">Tháng này</button>
+            <div class="text-center bg-white border border-gray-200 rounded-xl p-4">
+                <h3 class="text-base font-medium text-gray-700 mb-3">Thu Chi Theo Tháng</h3>
+                <div class="relative h-48 md:h-56">
+                    <canvas id="incomeExpenseBarChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-400 text-center mt-2">
+                    So sánh thu nhập và chi tiêu trong 12 tháng gần nhất
+                </p>
+            </div>
+        </div>
+    </section>
+    <div class="border-t border-gray-100 my-5"></div>
+    <section id="filter-section" class="scroll-mt-40">
+        <div id="filter" class="text-center bg-white border border-gray-200 rounded-2xl p-4 mb-5">
+            <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">Lọc
+                & Tìm kiếm</h2>
+
+            <div class="mb-3">
+                <input type="text" id="filter-search" placeholder="Tìm kiếm theo mô tả..." class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-base
+                              focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
-            <div class="filter-row">
-                <div class="filter-col">
-                    <input type="date" id="filter-date-from" title="Từ ngày" />
-                </div>
-                <div class="filter-col">
-                    <input type="date" id="filter-date-to" title="Đến ngày" />
-                </div>
+            <div class="flex gap-2 flex-wrap mb-3 justify-center">
+                <button type="button" data-range="today" class="btn-shortcut text-sm px-3 py-1.5 border border-gray-300 rounded-full
+                               hover:bg-gray-50 hover:border-blue-400 hover:text-blue-600 transition-colors">
+                    Hôm nay
+                </button>
+                <button type="button" data-range="week" class="btn-shortcut text-sm px-3 py-1.5 border border-gray-300 rounded-full
+                               hover:bg-gray-50 hover:border-blue-400 hover:text-blue-600 transition-colors">
+                    Tuần này
+                </button>
+                <button type="button" data-range="month" class="btn-shortcut text-sm px-3 py-1.5 border border-gray-300 rounded-full
+                               hover:bg-gray-50 hover:border-blue-400 hover:text-blue-600 transition-colors">
+                    Tháng này
+                </button>
             </div>
 
-            <div class="filter-row">
-                <div class="filter-col">
-                    <select id="filter-type">
-                        <option value="">-- Tất cả loại --</option>
-                        <option value="income">Thu</option>
-                        <option value="expense">Chi</option>
-                    </select>
-                </div>
-                <div class="filter-col">
-                    <select id="filter-category">
-                        <option value="">-- Tất cả danh mục --</option>
-                        <?php foreach ($categories as $cat): ?>
-                            <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
-                                <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+            <div class="flex flex-col gap-3 mb-3 sm:flex-row">
+                <input type="date" id="filter-date-from" title="Từ ngày" class="flex-1 px-3 py-2.5 border border-gray-200 rounded-lg text-base
+                              focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="date" id="filter-date-to" title="Đến ngày" class="flex-1 px-3 py-2.5 border border-gray-200 rounded-lg text-base
+                              focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
-            <div class="filter-actions">
-                <button type="button" class="btn btn-search" id="btnSearch"> <i class="ri-search-line"></i>Lọc</button>
-                <button type="button" class="btn btn-export" id="btnExport"><i class="ri-file-download-line"></i> Xuất
-                    CSV</button>
-                <button type="button" class="btn btn-reset" id="btnReset"><i class="ri-refresh-line"></i> Reset</button>
+            <div class="flex flex-col gap-3 mb-3 sm:flex-row">
+                <select id="filter-type" class="flex-1 px-3 py-2.5 border border-gray-200 rounded-lg text-base
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                    <option value="">-- Tất cả loại --</option>
+                    <option value="income">Thu</option>
+                    <option value="expense">Chi</option>
+                </select>
+                <select id="filter-category" class="flex-1 px-3 py-2.5 border border-gray-200 rounded-lg text-base
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                    <option value="">-- Tất cả danh mục --</option>
+                    <?php foreach ($categories as $cat): ?>
+                    <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
+                        <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
+                    </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
-            <div class="filter-result-box">
+            <div class="flex gap-2 flex-wrap justify-center">
+                <button type="button" id="btnFilter" class="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white
+                               rounded-lg text-base hover:bg-blue-700 transition-colors">
+                    <i class="ri-search-line text-sm"></i>Lọc
+                </button>
+                <button type="button" id="btnExport" class="flex items-center gap-1.5 px-4 py-2 bg-green-600 text-white
+                               rounded-lg text-base hover:bg-green-700 transition-colors">
+                    <i class="ri-file-download-line text-sm"></i>Xuất CSV
+                </button>
+                <button type="button" id="btnReset" class="flex items-center gap-1.5 px-4 py-2 bg-gray-100 text-gray-700
+                               border border-gray-200 rounded-lg text-base hover:bg-gray-200 transition-colors">
+                    <i class="ri-refresh-line text-sm"></i>Reset
+                </button>
+            </div>
+
+            <div class="mt-3 text-base text-gray-600">
                 <div id="filter-info"></div>
                 <div id="export-message"></div>
             </div>
         </div>
-
-        <hr class="separator" />
-
-        <!-- Pagination Section -->
-        <div id="pagination">
-            <div class="pagination-settings">
-                <div class="per-page-selector">
+    </section>
+    <div class="border-t border-gray-100 my-5"></div>
+    <section id="transaction-list" class="scroll-mt-40">
+        <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">Danh
+            sách giao dịch</h2>
+        <div id="pagination" class="mb-4">
+            <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+                <div class="flex items-center gap-2 text-base text-gray-600">
                     <label for="per-page-select">Hiển thị:</label>
-                    <select id="per-page-select">
-                        <option value="10" <?= $limit == 10 ? 'selected' : '' ?>>10 dòng</option>
-                        <option value="25" <?= $limit == 25 ? 'selected' : '' ?>>25 dòng</option>
-                        <option value="50" <?= $limit == 50 ? 'selected' : '' ?>>50 dòng</option>
+                    <select id="per-page-select" class="px-2 py-1.5 border border-gray-200 rounded-lg text-base bg-white
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="10" <?= $limit == 10  ? 'selected' : '' ?>>10 dòng</option>
+                        <option value="25" <?= $limit == 25  ? 'selected' : '' ?>>25 dòng</option>
+                        <option value="50" <?= $limit == 50  ? 'selected' : '' ?>>50 dòng</option>
                         <option value="100" <?= $limit == 100 ? 'selected' : '' ?>>100 dòng</option>
                     </select>
                 </div>
-
-                <div id="pagination-info">
+                <div id="pagination-info" class="text-base text-gray-500">
                     <?php if ($totalRecords > 0): ?>
-                        Hiển thị
-                        <?= min(($page - 1) * $limit + 1, $totalRecords) ?>-<?= min($page * $limit, $totalRecords) ?>
-                        trong tổng số <?= $totalRecords ?> giao dịch
+                    Hiển thị
+                    <?= min(($page - 1) * $limit + 1, $totalRecords) ?>-<?= min($page * $limit, $totalRecords) ?>
+                    trong tổng số <?= $totalRecords ?> giao dịch
                     <?php else: ?>
-                        Không có giao dịch
+                    Không có giao dịch
                     <?php endif; ?>
                 </div>
             </div>
-
-            <div id="pagination-controls">
+            <div id="pagination-controls" class="flex justify-center items-center gap-1 flex-wrap">
                 <?php if ($totalPages > 0): ?>
-                    <button class="btn-prev" <?= $page <= 1 ? 'disabled' : '' ?>>‹</button>
-                    <?php
+                <button class="btn-prev w-8 h-8 flex items-center justify-center border border-gray-200
+                                   rounded-lg text-base hover:bg-gray-50 disabled:opacity-40
+                                   disabled:cursor-not-allowed transition-colors"
+                    <?= $page <= 1 ? 'disabled' : '' ?>>‹</button>
+
+                <?php
                     if ($totalPages > 1) {
                         $start = max(1, $page - 2);
-                        $end = min($totalPages, $page + 2);
-                        if ($end - $start < 4) {
-                            $start = max(1, $end - 4);
-                        }
+                        $end   = min($totalPages, $page + 2);
+                        if ($end - $start < 4) $start = max(1, $end - 4);
                         for ($i = $start; $i <= $end; $i++):
                     ?>
-                            <button class="btn-page <?= $i == $page ? 'active' : '' ?>" data-page="<?= $i ?>">
-                                <?= $i ?>
-                            </button>
-                    <?php
+                <button class="btn-page w-8 h-8 flex items-center justify-center border rounded-lg
+                                       text-base transition-colors <?= $i == $page
+                                                                        ? 'bg-blue-600 text-white border-blue-600'
+                                                                        : 'border-gray-200 hover:bg-gray-50' ?>"
+                    data-page="<?= $i ?>">
+                    <?= $i ?>
+                </button>
+                <?php
                         endfor;
                     }
                     ?>
-                    <button class="btn-next" <?= $page >= $totalPages ? 'disabled' : '' ?>>›</button>
+
+                <button class="btn-next w-8 h-8 flex items-center justify-center border border-gray-200
+                                   rounded-lg text-base hover:bg-gray-50 disabled:opacity-40
+                                   disabled:cursor-not-allowed transition-colors"
+                    <?= $page >= $totalPages ? 'disabled' : '' ?>>›</button>
                 <?php endif; ?>
             </div>
         </div>
 
-        <h3>Danh sách giao dịch</h3>
-        <div class="table-wrapper">
-            <table>
-                <thead>
+        <div class="overflow-x-auto rounded-xl border border-gray-200">
+            <table class="w-full text-base border-collapse">
+                <thead class="bg-gray-50">
                     <tr>
-                        <th>STT</th>
-                        <th class="sortable" data-key="transaction_date">Ngày ↕</th>
-                        <th class="sortable" data-key="type">Loại ↕</th>
-                        <th class="sortable" data-key="category_name">Danh mục ↕</th>
-                        <th class="sortable" data-key="amount">Số tiền ↕</th>
-                        <th class="sortable" data-key="description">Mô tả ↕</th>
-                        <th>Hành động</th>
+                        <th
+                            class="sortable whitespace-nowrap text-center text-sm font-medium text-gray-500 uppercase tracking-wide px-3 py-3 border-b border-gray-200 w-10">
+                            STT</th>
+                        <th class="sortable whitespace-nowrap text-center text-sm font-medium text-gray-500 uppercase tracking-wide px-3 py-3 border-b border-gray-200 cursor-pointer hover:text-gray-800 select-none"
+                            data-key="transaction_date">Ngày ↕</th>
+                        <th class="sortable whitespace-nowrap text-center text-sm font-medium text-gray-500 uppercase tracking-wide px-3 py-3 border-b border-gray-200 cursor-pointer hover:text-gray-800 select-none"
+                            data-key="type">Loại ↕</th>
+                        <th class="sortable whitespace-nowrap text-center text-sm font-medium text-gray-500 uppercase tracking-wide px-3 py-3 border-b border-gray-200 cursor-pointer hover:text-gray-800 select-none"
+                            data-key="category_name">Danh mục ↕</th>
+                        <th class="sortable whitespace-nowrap text-center text-sm font-medium text-gray-500 uppercase tracking-wide px-3 py-3 border-b border-gray-200 cursor-pointer hover:text-gray-800 select-none"
+                            data-key="amount">Số tiền ↕</th>
+                        <th class="sortable whitespace-nowrap text-center text-sm font-medium text-gray-500 uppercase tracking-wide px-3 py-3 border-b border-gray-200 cursor-pointer hover:text-gray-800 select-none"
+                            data-key="description">Mô tả ↕</th>
+                        <th
+                            class="whitespace-nowrap text-center text-sm font-medium text-gray-500 uppercase tracking-wide px-3 py-3 border-b border-gray-200">
+                            Hành động</th>
                     </tr>
                 </thead>
                 <tbody id="txTableBody">
                     <?php if (count($transactions) > 0): ?>
-                        <?php foreach ($transactions as $index => $tx): ?>
-                            <tr>
-                                <td><?= $index + 1 ?></td>
-                                <td><?= date('d/m/Y', strtotime($tx['transaction_date'])) ?></td>
-                                <td>
-                                    <?php if ($tx['type'] === 'income'): ?>
-                                        <span class="text-green">Thu nhập</span>
-                                    <?php else: ?>
-                                        <span class="text-red">Chi tiêu</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <?php
+                    <?php foreach ($transactions as $index => $tx): ?>
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-3 py-3 border-b border-gray-100 text-gray-500 text-center whitespace-nowrap">
+                            <?= $offset + $index + 1 ?></td>
+                        <td class="px-3 py-3 border-b border-gray-100 whitespace-nowrap text-gray-700">
+                            <?= date('d/m/Y', strtotime($tx['transaction_date'])) ?></td>
+                        <td class="px-3 py-3 border-b border-gray-100 whitespace-nowrap">
+                            <?php if ($tx['type'] === 'income'): ?>
+                            <span class="text-sm font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Thu
+                                nhập</span>
+                            <?php else: ?>
+                            <span class="text-sm font-medium text-red-500 bg-red-50 px-2 py-0.5 rounded-full">Chi
+                                tiêu</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="px-3 py-3 border-b border-gray-100 text-gray-700">
+                            <?php
                                     if ($tx['category_id'] && isset($categoryMap[$tx['category_id']])) {
                                         echo e($categoryMap[$tx['category_id']]['name']);
                                     } else {
-                                        echo '<span class="category-unset">Chưa phân loại</span>';
+                                        echo '<span class="text-gray-400 italic text-sm">Chưa phân loại</span>';
                                     }
                                     ?>
-                                </td>
-                                <td class="text-dark"><?= formatMoney($tx['amount']) ?></td>
-                                <td><?= e($tx['description']) ?></td>
-                                <td>
-                                    <button class="btn btn-edit" data-id="<?= $tx['id'] ?>"
-                                        data-category="<?= $tx['category_id'] ?? '' ?>"><i class="ri-edit-line"></i>
-                                        Sửa</button>
-                                    <button class="btn btn-delete" data-id="<?= $tx['id'] ?>"><i class="ri-delete-bin-line"></i>
-                                        Xóa</button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
+                        </td>
+                        <td class="px-3 py-3 border-b border-gray-100 font-medium text-gray-800 whitespace-nowrap">
+                            <?= formatMoney($tx['amount']) ?></td>
+                        <td class="px-3 py-3 border-b border-gray-100 text-gray-600 max-w-[160px] truncate">
+                            <?= e($tx['description']) ?></td>
+                        <td class="px-3 py-3 border-b border-gray-100 whitespace-nowrap">
+                            <div class="flex gap-1.5">
+                                <button
+                                    class="btn-edit text-sm px-2.5 py-1 border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                                    data-id="<?= $tx['id'] ?>"
+                                    data-category="<?= $tx['category_id'] ?? '' ?>">Sửa</button>
+                                <button
+                                    class="btn-delete text-sm px-2.5 py-1 border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition-colors"
+                                    data-id="<?= $tx['id'] ?>">Xóa</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
                     <?php else: ?>
-                        <tr>
-                            <td colspan="7" class="empty-row">Chưa có giao dịch.</td>
-                        </tr>
+                    <tr>
+                        <td colspan="7" class="text-center text-gray-400 py-10 text-base">Chưa có giao dịch.</td>
+                    </tr>
                     <?php endif; ?>
                 </tbody>
             </table>

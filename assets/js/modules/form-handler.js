@@ -141,14 +141,6 @@ const FormHandler = {
       btnCancel.style.display = "inline-flex";
     }
 
-    // Show form only on mobile; guard visibility
-    const isMobile = window.matchMedia("(max-width: 1000px)").matches;
-    if (isMobile) {
-      if (typeof ToggleFormHandler !== "undefined" && typeof ToggleFormHandler.showForm === "function") {
-        ToggleFormHandler.showForm();
-      }
-    }
-
     setTimeout(() => {
       const addForm = document.getElementById("addForm");
       if (addForm && addForm.offsetParent !== null) {
@@ -238,10 +230,6 @@ const FormHandler = {
     const btnCancel = document.getElementById("btnCancelEdit");
     if (btnCancel) {
       btnCancel.style.display = "none";
-    }
-
-    if (typeof ToggleFormHandler !== "undefined" && typeof ToggleFormHandler.hideForm === "function") {
-      ToggleFormHandler.hideForm();
     }
   },
 

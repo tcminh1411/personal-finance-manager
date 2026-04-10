@@ -1,6 +1,5 @@
 /**
  * Personal Finance Manager - Main Entry Point
- * Author: [Your Name]
  * Description: Modular architecture for better maintainability
  */
 
@@ -44,7 +43,7 @@ function initApp() {
     ChartHandler.init();
   }
 
-  // ===== FIX: Set default date to today (MUST BE LAST) =====
+  // Set default date to today
   setDefaultDate();
 }
 
