@@ -141,7 +141,7 @@ const FilterEvents = {
   },
 
   bindDateShortcuts() {
-    const buttons = document.querySelectorAll(".btn-shortcut");
+    const buttons = document.querySelectorAll("[data-range]");
     if (!buttons.length) return;
 
     buttons.forEach((btn) => {
@@ -175,7 +175,7 @@ const FilterEvents = {
   },
 
   bindSortHeaders() {
-    const headers = document.querySelectorAll(".sortable");
+    const headers = document.querySelectorAll("[data-sortable]");
     if (!headers.length) return;
 
     headers.forEach((th) => {
@@ -196,10 +196,10 @@ const FilterEvents = {
 
         // Update UI
         headers.forEach((h) => {
-          h.classList.remove("sort-asc", "sort-desc");
+          h.classList.remove("text-blue-600", "font-semibold");
         });
 
-        th.classList.add(`sort-${FilterCore.currentSort.order.toLowerCase()}`);
+        th.classList.add("text-blue-600", "font-semibold");
 
         // Reset pagination về trang 1 khi sort
         if (typeof FilterCore !== "undefined") {
@@ -236,8 +236,8 @@ const FilterEvents = {
     }
 
     // Reset sort headers
-    document.querySelectorAll(".sortable").forEach((th) => {
-      th.classList.remove("sort-asc", "sort-desc");
+    document.querySelectorAll("[data-sortable]").forEach((th) => {
+      th.classList.remove("text-blue-600", "font-semibold");
     });
 
     // Reset FilterCore sort state

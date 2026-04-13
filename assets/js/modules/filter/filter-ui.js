@@ -18,9 +18,9 @@ const FilterUI = {
 
     // Add/remove loading class for styling
     if (show) {
-      btnFilter.classList.add("loading");
+      btnFilter.classList.add("opacity-50", "pointer-events-none");
     } else {
-      btnFilter.classList.remove("loading");
+      btnFilter.classList.remove("opacity-50", "pointer-events-none");
     }
   },
 
@@ -158,8 +158,8 @@ const FilterUI = {
    * Reset sort state
    */
   resetSortState() {
-    document.querySelectorAll(".sortable").forEach((th) => {
-      th.classList.remove("sort-asc", "sort-desc");
+    document.querySelectorAll("[data-sortable]").forEach((th) => {
+      th.classList.remove("text-blue-600", "font-semibold");
     });
   },
 };

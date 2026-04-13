@@ -18,8 +18,8 @@ const TableHandler = {
         if (!tableBody) return;
 
         tableBody.addEventListener("click", (e) => {
-            const btnDelete = e.target.closest(".btn-delete");
-            const btnEdit = e.target.closest(".btn-edit");
+            const btnDelete = e.target.closest("[data-action='delete']");
+            const btnEdit = e.target.closest("[data-action='edit']");
 
             if (btnDelete) {
                 const id = btnDelete.dataset.id;
@@ -150,11 +150,11 @@ const TableHandler = {
                 </td>
                 <td class="px-3 py-3 border-b border-gray-100 text-gray-700">${categoryDisplay}</td>
                 <td class="px-3 py-3 border-b border-gray-100 font-medium text-gray-800 whitespace-nowrap">${amount}</td>
-                <td class="px-3 py-3 border-b border-gray-100 text-gray-600 max-w-[160px] truncate">${Utils.escapeHtml(tx.description)}</td>
+                <td class="px-3 py-3 border-b border-gray-100 text-gray-600 max-w-40 truncate">${Utils.escapeHtml(tx.description)}</td>
                 <td class="px-3 py-3 border-b border-gray-100 whitespace-nowrap">
                     <div class="flex gap-1.5">
-                        <button class="btn-edit text-sm px-2.5 py-1 border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors" data-id="${tx.id}" data-category="${tx.category_id || ""}">Sửa</button>
-                        <button class="btn-delete text-sm px-2.5 py-1 border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition-colors" data-id="${tx.id}">Xóa</button>
+                        <button class="text-sm px-2.5 py-1 border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors" data-id="${tx.id}" data-category="${tx.category_id || ""}" data-action="edit">Sửa</button>
+                        <button class="text-sm px-2.5 py-1 border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition-colors" data-id="${tx.id}" data-action="delete">Xóa</button>
                     </div>
                 </td>
             </tr>
@@ -166,18 +166,12 @@ const TableHandler = {
      * @param {Object} summary - { total_income, total_expense, balance }
      */
     updateSummary(summary) {
-        const container = document.querySelector(".grid-cols-1.sm\\:grid-cols-3");
-        if (!container) return;
+        const incomeEl  = document.getElementById("summary-income");
+        const expenseEl = document.getElementById("summary-expense");
+        const balanceEl = document.getElementById("summary-balance");
 
-        const cards = container.querySelectorAll(".bg-white.border.rounded-xl.p-4.text-center");
-        if (cards.length >= 3) {
-            const incomeValue = cards[0].querySelector("p");
-            const expenseValue = cards[1].querySelector("p");
-            const balanceValue = cards[2].querySelector("p");
-
-            if (incomeValue) incomeValue.textContent = Utils.formatMoney(summary.total_income);
-            if (expenseValue) expenseValue.textContent = Utils.formatMoney(summary.total_expense);
-            if (balanceValue) balanceValue.textContent = Utils.formatMoney(summary.balance);
-        }
+        if (incomeEl)  incomeEl.textContent  = Utils.formatMoney(summary.total_income);
+        if (expenseEl) expenseEl.textContent = Utils.formatMoney(summary.total_expense);
+        if (balanceEl) balanceEl.textContent = Utils.formatMoney(summary.balance);
     }
 };

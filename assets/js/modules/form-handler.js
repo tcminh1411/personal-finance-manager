@@ -138,7 +138,7 @@ const FormHandler = {
 
     const btnCancel = document.getElementById("btnCancelEdit");
     if (btnCancel) {
-      btnCancel.style.display = "inline-flex";
+      btnCancel.classList.remove("hidden");
     }
 
     setTimeout(() => {
@@ -229,7 +229,7 @@ const FormHandler = {
 
     const btnCancel = document.getElementById("btnCancelEdit");
     if (btnCancel) {
-      btnCancel.style.display = "none";
+      btnCancel.classList.add("hidden");
     }
   },
 

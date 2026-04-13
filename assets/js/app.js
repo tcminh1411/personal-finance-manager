@@ -43,6 +43,11 @@ function initApp() {
     ChartHandler.init();
   }
 
+  // 8. Sticky Header
+  if (typeof StickyHeader !== "undefined") {
+    StickyHeader.init();
+  }
+  
   // Set default date to today
   setDefaultDate();
 }

@@ -40,21 +40,19 @@ const PaginationHandler = {
     const btn = e.target.closest("button");
     if (!btn) return;
 
+    const action = btn.dataset.action;
+
     const actions = {
-      "btn-prev": () => this.goToPage(this.currentPage - 1),
-      "btn-next": () => this.goToPage(this.currentPage + 1),
-      "btn-page": () => {
+      "prev": () => this.goToPage(this.currentPage - 1),
+      "next": () => this.goToPage(this.currentPage + 1),
+      "page": () => {
         const page = Number.parseInt(btn.dataset.page, 10);
         if (!Number.isNaN(page)) this.goToPage(page);
       },
     };
 
-    const btnClass = Array.from(btn.classList).find((cls) =>
-      cls.startsWith("btn-")
-    );
-
-    if (btnClass && actions[btnClass]) {
-      actions[btnClass]();
+    if (action && actions[action]) {
+      actions[action]();
     }
   },
 
@@ -112,9 +110,9 @@ const PaginationHandler = {
     const buttons = controls.querySelectorAll("button");
     buttons.forEach((btn) => {
       btn.disabled = show;
+      btn.classList.toggle("opacity-50", show);
+      btn.classList.toggle("pointer-events-none", show);
     });
-
-    controls.classList.toggle("loading", show);
   },
 
   /**
@@ -174,19 +172,20 @@ const PaginationHandler = {
     const { currentPage, totalPages } = this;
 
     return `
-            <button class="btn-prev" ${
+            <button class="w-8 h-8 flex items-center justify-center border border-gray-200 rounded-lg text-base hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors" data-action="prev" ${
               currentPage === 1 ? "disabled" : ""
             }>‹</button>
             ${pages
               .map(
                 (page) =>
-                  `<button class="btn-page ${
-                    page === currentPage ? "active" : ""
-                  }"
-                         data-page="${page}">${page}</button>`
+                  `<button class="w-8 h-8 flex items-center justify-center border rounded-lg text-base transition-colors ${
+                    page === currentPage
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'border-gray-200 hover:bg-gray-50'
+                  }" data-action="page" data-page="${page}">${page}</button>`
               )
               .join("")}
-            <button class="btn-next" ${
+            <button class="w-8 h-8 flex items-center justify-center border border-gray-200 rounded-lg text-base hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors" data-action="next" ${
               currentPage === totalPages ? "disabled" : ""
             }>›</button>
         `;
