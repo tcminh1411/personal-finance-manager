@@ -15,12 +15,10 @@
                 md:flex-row md:flex-wrap md:justify-between md:items-center md:px-6
                 lg:flex-nowrap lg:gap-4">
 
-            <!-- Tên web: luôn bên trái trên md+ -->
             <h1 class="text-2xl font-bold text-gray-800 md:flex-shrink-0">
                 Personal Finance Manager
             </h1>
 
-            <!-- User + Đăng xuất: hàng 2 mobile, phải hàng 1 trên md+ -->
             <?php if (isset($_SESSION['username'])): ?>
                 <div class="flex items-center text-lg gap-4
                     md:order-2 md:flex-shrink-0
@@ -34,7 +32,6 @@
                 </div>
             <?php endif; ?>
 
-            <!-- Nav: hàng 3 mobile, hàng 2 giữa trên md, giữa hàng 1 trên lg -->
             <nav class="w-full flex justify-center py-1
                     md:order-3
                     lg:order-2 lg:flex-1 lg:w-auto">

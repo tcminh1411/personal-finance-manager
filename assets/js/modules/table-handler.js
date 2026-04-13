@@ -144,15 +144,15 @@ const TableHandler = {
         return `
             <tr class="hover:bg-gray-50 transition-colors">
                 <td class="px-3 py-3 border-b border-gray-100 text-gray-500 text-center whitespace-nowrap">${rowNumber}</td>
-                <td class="px-3 py-3 border-b border-gray-100 whitespace-nowrap text-gray-700">${date}</td>
-                <td class="px-3 py-3 border-b border-gray-100 whitespace-nowrap">
+                <td class="px-3 py-3 border-b border-gray-100 text-center whitespace-nowrap text-gray-700">${date}</td>
+                <td class="px-3 py-3 border-b border-gray-100 text-center whitespace-nowrap">
                     <span class="${badgeClass}">${typeText}</span>
                 </td>
                 <td class="px-3 py-3 border-b border-gray-100 text-gray-700">${categoryDisplay}</td>
                 <td class="px-3 py-3 border-b border-gray-100 font-medium text-gray-800 whitespace-nowrap">${amount}</td>
                 <td class="px-3 py-3 border-b border-gray-100 text-gray-600 max-w-40 truncate">${Utils.escapeHtml(tx.description)}</td>
                 <td class="px-3 py-3 border-b border-gray-100 whitespace-nowrap">
-                    <div class="flex gap-1.5">
+                    <div class="flex gap-1.5 justify-center">
                         <button class="text-sm px-2.5 py-1 border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors" data-id="${tx.id}" data-category="${tx.category_id || ""}" data-action="edit">Sửa</button>
                         <button class="text-sm px-2.5 py-1 border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition-colors" data-id="${tx.id}" data-action="delete">Xóa</button>
                     </div>

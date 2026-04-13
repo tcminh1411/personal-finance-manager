@@ -60,13 +60,13 @@ try {
 require_once 'includes/header.php';
 ?>
 <main class="px-4 py-5 max-w-7xl mx-auto md:px-6 md:py-6">
-    <section id="manager" class="p-4 mb-5 md:p-6 scroll-mt-44 md:scroll-mt-24 lg:scroll-mt-16"">
-        <h2 class=" text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">
-        <i class="ri-star-fill text-yellow-400 text-lg"></i>
-        Quản lý
+    <section id="manager" class="p-4 mb-5 md:p-6 scroll-mt-44 md:scroll-mt-24 lg:scroll-mt-16">
+        <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">
+            <i class="ri-star-fill text-yellow-400 text-lg"></i>
+            Quản lý
         </h2>
 
-        <div class="grid grid-cols-1 gap-3 mb-5 sm:grid-cols-3">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
 
             <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
                 <h3 class="text-base text-gray-500 mb-1">Tổng Thu</h3>
@@ -90,7 +90,7 @@ require_once 'includes/header.php';
             </div>
         </div>
     </section>
-    <div class="border-t border-gray-100 my-5"></div>
+    <div class="border-t border-gray-100 my-3"></div>
     <section id="charts" class="mb-5">
         <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">
             <i class="ri-bar-chart-box-line"></i> Phân Tích Chi Tiêu
@@ -119,7 +119,7 @@ require_once 'includes/header.php';
             </div>
         </div>
     </section>
-    <div class="border-t border-gray-100 my-5"></div>
+    <div class="border-t border-gray-100 my-3"></div>
     <section id="addForm" class="bg-white border border-gray-200 rounded-2xl p-4 mb-5 md:p-6 scroll-mt-10">
 
         <h2 class=" text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">Thêm
@@ -170,7 +170,7 @@ require_once 'includes/header.php';
                               focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
             <div class="md:col-span-1 flex flex-col gap-1">
-                <label class="text-base font-medium text-gray-700">Thao tác</label>
+                <div class="text-base font-medium text-gray-700">Thao tác</div>
 
                 <div class="flex gap-2">
                     <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium text-base
@@ -186,7 +186,7 @@ require_once 'includes/header.php';
             <div id="notification"></div>
         </form>
     </section>
-    <div class="border-t border-gray-100 my-5"></div>
+    <div class="border-t border-gray-100 my-3"></div>
     <section id="filter-section" class="scroll-mt-8">
         <div id="filter" class="text-center bg-white border border-gray-200 rounded-2xl p-4 mb-5">
             <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">Lọc
@@ -258,7 +258,7 @@ require_once 'includes/header.php';
             </div>
         </div>
     </section>
-    <div class="border-t border-gray-100 my-5"></div>
+    <div class="border-t border-gray-100 my-3"></div>
     <section id="transaction-list" class="scroll-mt-10">
         <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">Danh
             sách giao dịch</h2>
@@ -341,53 +341,11 @@ require_once 'includes/header.php';
                     </tr>
                 </thead>
                 <tbody id="txTableBody">
-                    <?php if (count($transactions) > 0): ?>
-                        <?php foreach ($transactions as $index => $tx): ?>
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-3 py-3 border-b border-gray-100 text-gray-500 text-center whitespace-nowrap">
-                                    <?= $offset + $index + 1 ?></td>
-                                <td class="px-3 py-3 border-b border-gray-100 whitespace-nowrap text-gray-700">
-                                    <?= date('d/m/Y', strtotime($tx['transaction_date'])) ?></td>
-                                <td class="px-3 py-3 border-b border-gray-100 whitespace-nowrap">
-                                    <?php if ($tx['type'] === 'income'): ?>
-                                        <span class="text-sm font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Thu
-                                            nhập</span>
-                                    <?php else: ?>
-                                        <span class="text-sm font-medium text-red-500 bg-red-50 px-2 py-0.5 rounded-full">Chi
-                                            tiêu</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="px-3 py-3 border-b border-gray-100 text-gray-700">
-                                    <?php
-                                    if ($tx['category_id'] && isset($categoryMap[$tx['category_id']])) {
-                                        echo e($categoryMap[$tx['category_id']]['name']);
-                                    } else {
-                                        echo '<span class="text-gray-400 italic text-sm">Chưa phân loại</span>';
-                                    }
-                                    ?>
-                                </td>
-                                <td class="px-3 py-3 border-b border-gray-100 font-medium text-gray-800 whitespace-nowrap">
-                                    <?= formatMoney($tx['amount']) ?></td>
-                                <td class="px-3 py-3 border-b border-gray-100 text-gray-600 max-w-40 truncate">
-                                    <?= e($tx['description']) ?></td>
-                                <td class="px-3 py-3 border-b border-gray-100 whitespace-nowrap">
-                                    <div class="flex gap-1.5">
-                                        <button
-                                            class="text-sm px-2.5 py-1 border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
-                                            data-id="<?= $tx['id'] ?>" data-category="<?= $tx['category_id'] ?? '' ?>"
-                                            data-action="edit">Sửa</button>
-                                        <button
-                                            class="text-sm px-2.5 py-1 border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition-colors"
-                                            data-id="<?= $tx['id'] ?>" data-action="delete">Xóa</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="7" class="text-center text-gray-400 py-10 text-base">Chưa có giao dịch.</td>
-                        </tr>
-                    <?php endif; ?>
+                    <tr>
+                        <td colspan="7" class="text-center text-gray-400 py-10">
+                            Đang tải...
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
