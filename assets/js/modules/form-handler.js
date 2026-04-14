@@ -144,7 +144,7 @@ const FormHandler = {
     setTimeout(() => {
       const addForm = document.getElementById("addForm");
       if (addForm && addForm.offsetParent !== null) {
-        addForm.scrollIntoView({ behavior: "smooth", block: "start" });
+        addForm.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }, 50);
   },

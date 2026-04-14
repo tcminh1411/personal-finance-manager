@@ -60,7 +60,7 @@ try {
 require_once 'includes/header.php';
 ?>
 <main class="px-4 py-5 max-w-7xl mx-auto md:px-6 md:py-6">
-    <section id="manager" class="p-4 mb-5 md:p-6 scroll-mt-44 md:scroll-mt-24 lg:scroll-mt-16">
+    <section id="manager" class="p-4 mb-5 md:p-6 scroll-mt-38 md:scroll-mt-26 lg:scroll-mt-14">
         <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">
             <i class="ri-star-fill text-yellow-400 text-lg"></i>
             Quản lý
@@ -120,9 +120,10 @@ require_once 'includes/header.php';
         </div>
     </section>
     <div class="border-t border-gray-100 my-3"></div>
-    <section id="addForm" class="bg-white border border-gray-200 rounded-2xl p-4 mb-5 md:p-6 scroll-mt-10">
+    <section id="addForm"
+        class="bg-white border border-gray-200 rounded-2xl p-4 mb-5 md:p-6 scroll-mt-36 md:scroll-mt-22 lg:scroll-mt-12">
 
-        <h2 class=" text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">Thêm
+        <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">Thêm
             Giao Dịch</h2>
 
         <form id="transactionForm" novalidate class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -183,11 +184,11 @@ require_once 'includes/header.php';
                     </button>
                 </div>
             </div>
-            <div id="notification"></div>
+            <div id="notification" class="md:col-span-2 text-center text-sm font-semibold py-3 rounded-xl"></div>
         </form>
     </section>
     <div class="border-t border-gray-100 my-3"></div>
-    <section id="filter-section" class="scroll-mt-8">
+    <section id="filter-section" class="scroll-mt-36 md:scroll-mt-24 lg:scroll-mt-14">
         <div id="filter" class="text-center bg-white border border-gray-200 rounded-2xl p-4 mb-5">
             <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">Lọc
                 & Tìm kiếm</h2>
@@ -213,9 +214,9 @@ require_once 'includes/header.php';
             </div>
 
             <div class="flex flex-col gap-3 mb-3 sm:flex-row">
-                <input type="date" id="filter-date-from" title="Từ ngày" class="flex-1 px-3 py-2.5 border border-gray-200 rounded-lg text-base
+                <input type="date" id="filter-date-from" title="Từ ngày" class="flex-1 px-3 py-2.5 border border-gray-200 rounded-lg text-base w-full
                               focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="date" id="filter-date-to" title="Đến ngày" class="flex-1 px-3 py-2.5 border border-gray-200 rounded-lg text-base
+                <input type="date" id="filter-date-to" title="Đến ngày" class="flex-1 px-3 py-2.5 border border-gray-200 rounded-lg text-base w-full
                               focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
@@ -259,7 +260,7 @@ require_once 'includes/header.php';
         </div>
     </section>
     <div class="border-t border-gray-100 my-3"></div>
-    <section id="transaction-list" class="scroll-mt-10">
+    <section id="transaction-list" class="scroll-mt-38 md:scroll-mt-28 lg:scroll-mt-18">
         <h2 class="text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">Danh
             sách giao dịch</h2>
         <div id="pagination" class="mb-4">

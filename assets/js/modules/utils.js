@@ -14,11 +14,11 @@ const Utils = {
     if (!notifyBox) return;
 
     notifyBox.textContent = message;
-    notifyBox.className = type;
+    notifyBox.classList.add(type);
 
     setTimeout(() => {
       notifyBox.textContent = "";
-      notifyBox.className = "";
+      notifyBox.classList.remove(type);
     }, 3000);
   },
 

@@ -4,11 +4,10 @@
   "description": "> Modern web application for personal financial management with real-time tracking, advanced filtering, and data visualization.",
   "main": "index.js",
   "scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "build:css": "npx @tailwindcss/cli -i ./assets/css/tailwind-input.css -o ./assets/css/style.css",
-  "watch:css": "npx @tailwindcss/cli -i ./assets/css/tailwind-input.css -o ./assets/css/style.css --watch"
-},
-
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "npx @tailwindcss/cli -i ./assets/css/tailwind-input.css -o ./assets/css/style.css",
+    "watch:css": "npx @tailwindcss/cli -i ./assets/css/tailwind-input.css -o ./assets/css/style.css --watch"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tcminh1411/personal-finance-manager.git"

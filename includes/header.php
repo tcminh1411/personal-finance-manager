@@ -15,21 +15,21 @@
                 md:flex-row md:flex-wrap md:justify-between md:items-center md:px-6
                 lg:flex-nowrap lg:gap-4">
 
-            <h1 class="text-2xl font-bold text-gray-800 md:flex-shrink-0">
+            <h1 class="text-2xl font-bold text-gray-800 md:shrink-0">
                 Personal Finance Manager
             </h1>
 
             <?php if (isset($_SESSION['username'])): ?>
-                <div class="flex items-center text-lg gap-4
-                    md:order-2 md:flex-shrink-0
+            <div class="flex items-center text-lg gap-4
+                    md:order-2 md:shrink-0
                     lg:order-3">
-                    <span class="text-gray-600">
-                        <i class="ri-user-fill"></i> <?= htmlspecialchars($_SESSION['username']) ?>
-                    </span>
-                    <a href="auth/logout.php" class="text-red-500 hover:text-red-700 transition">
-                        <i class="ri-logout-circle-line"></i> Đăng xuất
-                    </a>
-                </div>
+                <span class="text-gray-600">
+                    <i class="ri-user-fill"></i> <?= htmlspecialchars($_SESSION['username']) ?>
+                </span>
+                <a href="auth/logout.php" class="text-red-500 hover:text-red-700 transition">
+                    <i class="ri-logout-circle-line"></i> Đăng xuất
+                </a>
+            </div>
             <?php endif; ?>
 
             <nav class="w-full flex justify-center py-1
