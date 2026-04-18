@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Registration Process Handler
  * Creates new user account with password hashing
@@ -15,7 +16,6 @@ define('SESSION_REGISTER_SUCCESS', 'register_success');
 session_start();
 require_once '../config/database.php';
 
-// Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header(HEADER_LOCATION . REGISTER_PAGE);
     exit;
@@ -26,7 +26,6 @@ $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
 $passwordConfirm = $_POST['password_confirm'] ?? '';
 
-// Validate input
 $errors = [];
 
 // Validate username
@@ -50,7 +49,6 @@ if ($password !== $passwordConfirm) {
     $errors[] = 'Mật khẩu xác nhận không khớp!';
 }
 
-// Return errors if any
 if (!empty($errors)) {
     $_SESSION[SESSION_REGISTER_ERROR] = implode(' ', $errors);
     header(HEADER_LOCATION . REGISTER_PAGE);
@@ -58,7 +56,6 @@ if (!empty($errors)) {
 }
 
 try {
-    // Check if username already exists
     $sql = "SELECT id FROM users WHERE username = :username LIMIT 1";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':username' => $username]);
@@ -69,10 +66,8 @@ try {
         exit;
     }
 
-    // Hash password
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Insert new user
     $sql = "INSERT INTO users (username, password, created_at)
             VALUES (:username, :password, NOW())";
     $stmt = $pdo->prepare($sql);
@@ -81,11 +76,9 @@ try {
         ':password' => $hashedPassword
     ]);
 
-    // Success - redirect to login with success message
     $_SESSION[SESSION_REGISTER_SUCCESS] = 'Đăng ký thành công! Vui lòng đăng nhập.';
     header(HEADER_LOCATION . LOGIN_PAGE);
     exit;
-
 } catch (PDOException $e) {
     // Log error (in production, log to file)
     error_log("Registration error: " . $e->getMessage());

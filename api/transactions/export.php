@@ -1,4 +1,5 @@
 <?php
+
 /**
  * API Endpoint: CSV Export
  * Generates a formatted CSV file of transactions with financial summaries
@@ -6,10 +7,8 @@
 
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
-// Start session to get user_id
 session_start();
 
-// Check if user is logged in
 if (!isset($_SESSION['logged_in']) || !isset($_SESSION['user_id'])) {
     http_response_code(401);
     die('Unauthorized');
@@ -24,10 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    // Get current user ID
     $current_user_id = $_SESSION['user_id'];
 
-    // Get filter parameters
     $type = $_GET['type'] ?? null;
     $category_id = $_GET['category_id'] ?? null;
     $search = $_GET['search'] ?? null;
@@ -42,25 +39,21 @@ try {
 
     $params = [':user_id' => $current_user_id];
 
-    // Filter by transaction type
     if ($type && in_array($type, ['income', 'expense'])) {
         $sql .= " AND t.type = :type";
         $params[':type'] = $type;
     }
 
-    // Filter by category
     if ($category_id) {
         $sql .= " AND t.category_id = :category_id";
         $params[':category_id'] = $category_id;
     }
 
-    // Filter by search keyword
     if ($search) {
         $sql .= " AND t.description LIKE :search";
         $params[':search'] = '%' . $search . '%';
     }
 
-    // Filter by date range
     if ($date_from) {
         $sql .= " AND t.transaction_date >= :date_from";
         $params[':date_from'] = $date_from;
@@ -71,15 +64,12 @@ try {
         $params[':date_to'] = $date_to;
     }
 
-    // Default sorting
     $sql .= " ORDER BY t.transaction_date DESC, t.id DESC";
 
-    // Execute query
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $transactions = $stmt->fetchAll();
 
-    // Calculate summary
     $totalIncome = 0;
     $totalExpense = 0;
 
@@ -93,12 +83,10 @@ try {
 
     $balance = $totalIncome - $totalExpense;
 
-    // Generate CSV file
     if (ob_get_level()) {
         ob_end_clean();
     }
 
-    // Set download headers
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="giao-dich-' . date('Y-m-d_His') . '.csv"');
     header('Pragma: no-cache');
@@ -109,7 +97,6 @@ try {
     // Add UTF-8 BOM for Excel support
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-    // Write summary section
     fputcsv($output, ['=== SUMMARY ===']);
     fputcsv($output, ['Total Income', formatMoney($totalIncome)]);
     fputcsv($output, ['Total Expense', formatMoney($totalExpense)]);
@@ -118,10 +105,8 @@ try {
     fputcsv($output, ['Exported At', date('d/m/Y H:i:s')]);
     fputcsv($output, []);
 
-    // Write table header
     fputcsv($output, ['No', 'Date', 'Type', 'Category', 'Amount (VND)', 'Description']);
 
-    // Write data rows
     foreach ($transactions as $index => $tx) {
         $row = [
             $index + 1,
@@ -136,7 +121,6 @@ try {
 
     fclose($output);
     exit;
-
 } catch (Exception $e) {
     // Clean output buffer before sending error
     if (ob_get_level()) {

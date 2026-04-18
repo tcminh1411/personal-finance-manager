@@ -1,4 +1,5 @@
 <?php
+
 /**
  * API Endpoint: Delete Transaction
  * Supports ID input via JSON body or traditional POST data
@@ -6,10 +7,8 @@
 
 header('Content-Type: application/json');
 
-// Start session to get user_id
 session_start();
 
-// Check if user is logged in
 if (!isset($_SESSION['logged_in']) || !isset($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
@@ -18,7 +17,6 @@ if (!isset($_SESSION['logged_in']) || !isset($_SESSION['user_id'])) {
 
 require_once '../../config/database.php';
 
-// Allow only POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Method Not Allowed']);
@@ -26,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    // Get current user ID from session
     $current_user_id = $_SESSION['user_id'];
 
     $input = json_decode(file_get_contents('php://input'), true);
@@ -65,7 +62,6 @@ try {
     } else {
         throw new InvalidArgumentException("Không thể xóa giao dịch");
     }
-
 } catch (Exception $e) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);

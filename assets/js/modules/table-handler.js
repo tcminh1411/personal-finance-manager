@@ -30,7 +30,7 @@ const TableHandler = {
                 const id = btnEdit.dataset.id;
                 const row = btnEdit.closest("tr");
                 const categoryId = btnEdit.dataset.category;
-                // Giả sử FormHandler đã được định nghĩa
+                // Assume FormHandler is defined
                 if (typeof FormHandler !== "undefined" && FormHandler.setEditMode) {
                     FormHandler.setEditMode(id, row, categoryId);
                 } else {
@@ -58,7 +58,11 @@ const TableHandler = {
             const data = await response.json();
 
             if (data.success) {
-                window.location.reload();
+                Utils.showNotification(data.message, "success");
+
+                if (typeof FilterHandler !== "undefined") {
+                  FilterHandler.applyFilters();
+                }
             } else {
                 alert("Lỗi xóa: " + data.message);
             }

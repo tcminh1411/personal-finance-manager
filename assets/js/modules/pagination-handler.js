@@ -16,9 +16,7 @@ const PaginationHandler = {
     this.loadSettings();
   },
 
-  /**
-   * Setup event listeners for pagination controls
-   */
+
   setupEventListeners() {
     document.addEventListener("click", (e) => {
       const target = e.target;
@@ -33,9 +31,7 @@ const PaginationHandler = {
     });
   },
 
-  /**
-   * Handle pagination button clicks
-   */
+
   handlePaginationClick(e) {
     const btn = e.target.closest("button");
     if (!btn) return;
@@ -56,9 +52,7 @@ const PaginationHandler = {
     }
   },
 
-  /**
-   * Handle per page change
-   */
+
   handlePerPageChange(e) {
     const value = Number.parseInt(e.target.value, 10);
 
@@ -73,9 +67,7 @@ const PaginationHandler = {
     }
   },
 
-  /**
-   * Go to specific page
-   */
+
   goToPage(page) {
     if (page < 1 || page > this.totalPages) return;
 
@@ -89,9 +81,7 @@ const PaginationHandler = {
     }
   },
 
-  /**
-   * Reset to first page
-   */
+
   resetToFirstPage() {
     this.currentPage = 1;
 
@@ -115,9 +105,7 @@ const PaginationHandler = {
     });
   },
 
-  /**
-   * Update pagination info display
-   */
+
   updatePaginationInfo() {
     const el = document.getElementById("pagination-info");
     if (!el) return;
@@ -133,9 +121,7 @@ const PaginationHandler = {
     el.innerHTML = `Hiển thị <strong>${start}-${end}</strong> / <strong>${this.totalRows}</strong>`;
   },
 
-  /**
-   * Apply pagination data from API response
-   */
+
   applyPaginationData(paginationData) {
     this.currentPage = paginationData.current_page;
     this.perPage = paginationData.per_page;
@@ -146,9 +132,7 @@ const PaginationHandler = {
     this.renderPaginationButtons();
   },
 
-  /**
-   * Render pagination buttons
-   */
+
   renderPaginationButtons() {
     const el = document.getElementById("pagination-controls");
 
@@ -164,9 +148,7 @@ const PaginationHandler = {
     }
   },
 
-  /**
-   * Build pagination HTML
-   */
+
   buildSimplePagination() {
     const pages = this.getVisiblePages(5);
     const { currentPage, totalPages } = this;
@@ -191,9 +173,7 @@ const PaginationHandler = {
         `;
   },
 
-  /**
-   * Get visible page numbers
-   */
+
   getVisiblePages(max = 5) {
     let start = Math.max(1, this.currentPage - Math.floor(max / 2));
     let end = Math.min(this.totalPages, start + max - 1);
@@ -205,9 +185,7 @@ const PaginationHandler = {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   },
 
-  /**
-   * Load pagination settings from localStorage
-   */
+
   loadSettings() {
     try {
       const saved = localStorage.getItem("pagination_per_page");
@@ -223,9 +201,7 @@ const PaginationHandler = {
     }
   },
 
-  /**
-   * Save pagination settings to localStorage
-   */
+
   saveSettings() {
     try {
       localStorage.setItem("pagination_per_page", String(this.perPage));

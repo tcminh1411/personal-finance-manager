@@ -27,16 +27,12 @@ const ExportHandler = {
     btn.innerHTML = "<i class=\"ri-loader-line ri-spin\"></i> Đang xuất...";
     btn.disabled = true;
 
-    // Build URL with current filter parameters
     const params = this.buildExportParams();
 
-    // Trigger file download
     this.downloadFile(`api/transactions/export.php?${params.toString()}`);
 
-    // Show success message
     this.showMessage("<i class=\"ri-checkbox-circle-line\"></i> Đã xuất file CSV thành công!", "success");
 
-    // Restore button state after short delay
     setTimeout(() => {
       btn.innerHTML = originalText;
       btn.disabled = false;

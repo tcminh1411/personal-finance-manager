@@ -18,7 +18,7 @@ const FilterHandler = {
   applyFilters: FilterAPI.applyFilters.bind(FilterAPI),
 
   resetFilters() {
-    FilterUI.clearFilterInputs();
+    FilterEvents.clearAllFilters();
     FilterUI.resetSortState();
 
     // Reset cả FilterCore và PaginationHandler

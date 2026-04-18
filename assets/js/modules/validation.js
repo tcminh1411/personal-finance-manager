@@ -23,14 +23,12 @@ const Validation = {
     const amountInput = document.getElementById("amount");
     if (!amountInput) return;
 
-    // Prevent invalid key presses
     amountInput.addEventListener("keydown", (e) => {
       if (["-", "+", "e", "E"].includes(e.key)) {
         e.preventDefault();
       }
     });
 
-    // Validate pasted content
     amountInput.addEventListener("paste", () => {
       setTimeout(() => {
         const value = Number.parseFloat(amountInput.value);
@@ -42,7 +40,6 @@ const Validation = {
       }, 10);
     });
 
-    // Auto-correct negative numbers
     amountInput.addEventListener("blur", () => {
       const value = Number.parseFloat(amountInput.value);
 
@@ -102,7 +99,6 @@ const Validation = {
       const selectedType = typeSelect.value;
       const currentCategory = categorySelect.value;
 
-      // Clear and rebuild category options
       categorySelect.innerHTML = "";
       categorySelect.appendChild(allOptions[0].cloneNode(true));
 
@@ -148,7 +144,6 @@ const Validation = {
           typeSelect.classList.remove("auto-filled");
         }, 500);
 
-        // Trigger change event
         typeSelect.dispatchEvent(new Event("change"));
 
         // Restore category selection
@@ -177,7 +172,6 @@ const Validation = {
       }
     };
 
-    // Validate amount
     const rawAmount = getEl("amount").value;
     const cleanAmount = rawAmount.replace(/[^\d.-]/g, "");
     const amount = Number.parseFloat(cleanAmount);
@@ -186,13 +180,11 @@ const Validation = {
       addError("Số tiền phải lớn hơn 0!", "amount");
     }
 
-    // Validate type
     const type = getEl("type").value;
     if (!type) {
       addError("Vui lòng chọn loại giao dịch!", "type");
     }
 
-    // Validate description
     const description = getEl("description").value.trim();
 
     if (!description) {

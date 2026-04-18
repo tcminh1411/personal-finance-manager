@@ -1,5 +1,4 @@
 <?php
-// 1. FORMAT & DISPLAY
 function formatMoney($amount)
 {
     return number_format($amount, 0, ',', '.') . ' Đ';
@@ -10,7 +9,6 @@ function e($string)
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
-// 2. VALIDATION HELPERS
 function validateAmount($amount)
 {
     $result = [
@@ -122,7 +120,6 @@ function validateCategory(PDO $pdo, $category_id, $type)
         } else {
             $result['error'] = 'Danh mục không hợp lệ hoặc không khớp với loại giao dịch';
         }
-
     } catch (PDOException $e) {
         $result['error'] = 'Lỗi kiểm tra danh mục';
     }
@@ -130,7 +127,6 @@ function validateCategory(PDO $pdo, $category_id, $type)
     return $result;
 }
 
-// 3. FILTER & PARAM HELPERS
 function getTrimmedParam($key, $default = null)
 {
     if (!isset($_GET[$key]) || trim($_GET[$key]) === '') {
@@ -139,8 +135,6 @@ function getTrimmedParam($key, $default = null)
 
     return trim($_GET[$key]);
 }
-
-// 4. DATE HELPERS
 
 /**
  * Calculate week range (Monday to Sunday)

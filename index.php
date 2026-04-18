@@ -151,9 +151,9 @@ require_once 'includes/header.php';
                                focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
                     <option value="">-- Chọn danh mục (tùy chọn) --</option>
                     <?php foreach ($categories as $cat): ?>
-                        <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
-                            <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
-                        </option>
+                    <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
+                        <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
+                    </option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -231,9 +231,9 @@ require_once 'includes/header.php';
                                focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
                     <option value="">-- Tất cả danh mục --</option>
                     <?php foreach ($categories as $cat): ?>
-                        <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
-                            <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
-                        </option>
+                    <option value="<?= $cat['id'] ?>" data-type="<?= $cat['type'] ?>">
+                        <?= e($cat['name']) ?> (<?= $cat['type'] === 'income' ? 'Thu' : 'Chi' ?>)
+                    </option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -277,44 +277,44 @@ require_once 'includes/header.php';
                 </div>
                 <div id="pagination-info" class="text-base text-gray-500">
                     <?php if ($totalRecords > 0): ?>
-                        Hiển thị
-                        <?= min(($page - 1) * $limit + 1, $totalRecords) ?>-<?= min($page * $limit, $totalRecords) ?>
-                        trong tổng số <?= $totalRecords ?> giao dịch
+                    Hiển thị
+                    <?= min(($page - 1) * $limit + 1, $totalRecords) ?>-<?= min($page * $limit, $totalRecords) ?>
+                    trong tổng số <?= $totalRecords ?> giao dịch
                     <?php else: ?>
-                        Không có giao dịch
+                    Không có giao dịch
                     <?php endif; ?>
                 </div>
             </div>
             <div id="pagination-controls" class="flex justify-center items-center gap-1 flex-wrap">
                 <?php if ($totalPages > 0): ?>
-                    <button class="w-8 h-8 flex items-center justify-center border border-gray-200
+                <button class="w-8 h-8 flex items-center justify-center border border-gray-200
                                    rounded-lg text-base hover:bg-gray-50 disabled:opacity-40
                                    disabled:cursor-not-allowed transition-colors" data-action="prev"
-                        <?= $page <= 1 ? 'disabled' : '' ?>>‹</button>
+                    <?= $page <= 1 ? 'disabled' : '' ?>>‹</button>
 
-                    <?php
+                <?php
                     if ($totalPages > 1) {
                         $start = max(1, $page - 2);
                         $end   = min($totalPages, $page + 2);
                         if ($end - $start < 4) $start = max(1, $end - 4);
                         for ($i = $start; $i <= $end; $i++):
                     ?>
-                            <button class="w-8 h-8 flex items-center justify-center border rounded-lg
+                <button class="w-8 h-8 flex items-center justify-center border rounded-lg
                                        text-base transition-colors <?= $i == $page
                                                                         ? 'bg-blue-600 text-white border-blue-600'
                                                                         : 'border-gray-200 hover:bg-gray-50' ?>"
-                                data-action="page" data-page="<?= $i ?>">
-                                <?= $i ?>
-                            </button>
-                    <?php
+                    data-action="page" data-page="<?= $i ?>">
+                    <?= $i ?>
+                </button>
+                <?php
                         endfor;
                     }
                     ?>
 
-                    <button class="w-8 h-8 flex items-center justify-center border border-gray-200
+                <button class="w-8 h-8 flex items-center justify-center border border-gray-200
                                    rounded-lg text-base hover:bg-gray-50 disabled:opacity-40
                                    disabled:cursor-not-allowed transition-colors" data-action="next"
-                        <?= $page >= $totalPages ? 'disabled' : '' ?>>›</button>
+                    <?= $page >= $totalPages ? 'disabled' : '' ?>>›</button>
                 <?php endif; ?>
             </div>
         </div>

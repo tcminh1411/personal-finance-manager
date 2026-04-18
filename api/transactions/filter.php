@@ -1,4 +1,5 @@
 <?php
+
 /**
  * API Endpoint: Advanced Transaction Filter
  * Handles complex filtering, multi-column sorting, and server-side pagination.
@@ -6,10 +7,8 @@
 
 header('Content-Type: application/json');
 
-// Start session to get user_id
 session_start();
 
-// Check if user is logged in
 if (!isset($_SESSION['logged_in']) || !isset($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
@@ -25,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-// ===== FIX: Define constants to avoid duplication =====
 define('PARAM_USER_ID', ':user_id');
 define('PARAM_TYPE', ':type');
 define('PARAM_CATEGORY_ID', ':category_id');
@@ -237,10 +235,8 @@ function sendJsonResponse($success, $data = null, $summary = null, $pagination =
 }
 
 try {
-    // Get current user ID
     $current_user_id = $_SESSION['user_id'];
 
-    // Get request parameters
     $type = getTrimmedParam('type', null);
     $category_id = getTrimmedParam('category_id', null);
     $search = getTrimmedParam('search', null);
@@ -252,12 +248,10 @@ try {
     $limit = isset($_GET['limit']) ? max(1, min(100, (int) $_GET['limit'])) : 10;
     $offset = ($page - 1) * $limit;
 
-    // Build filters
     $filterResult = buildFilterSql($type, $category_id, $search, $date_from, $date_to);
     $filters = $filterResult['filters'];
     $params = $filterResult['params'];
 
-    // Build ORDER BY clause
     $orderClause = buildOrderByClause($sort_by, $sort_order);
 
     // Execute queries (WITH USER FILTER)
@@ -265,7 +259,6 @@ try {
     $totalRows = executeCountQuery($pdo, $filters, $params, $current_user_id);
     $summary = executeSummaryQuery($pdo, $filters, $params, $current_user_id);
 
-    // Build pagination info
     $paginationInfo = calculatePagination($totalRows, $limit, $page);
 
     $pagination = [
@@ -277,7 +270,6 @@ try {
         'has_prev' => $paginationInfo['has_prev']
     ];
 
-    // Build response data
     $responseSummary = [
         'total_income' => $summary['total_income'],
         'total_expense' => $summary['total_expense'],
@@ -287,7 +279,6 @@ try {
     ];
 
     sendJsonResponse(true, $transactions, $responseSummary, $pagination);
-
 } catch (Throwable $e) {
     error_log('Filter API Error: ' . $e->getMessage());
     error_log('Error Trace: ' . $e->getTraceAsString());

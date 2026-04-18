@@ -25,7 +25,6 @@ const ChartHandler = {
     if (!canvas) return;
 
     try {
-      // Fetch data from API
       const response = await fetch(
         "api/analytics/summary.php?type=expense_by_category"
       );
@@ -36,7 +35,6 @@ const ChartHandler = {
         return;
       }
 
-      // Prepare chart data
       const labels = result.data.map((item) => item.category_name);
       const amounts = result.data.map((item) =>
         Number.parseFloat(item.total_amount)
@@ -53,7 +51,6 @@ const ChartHandler = {
         this.pieChart.destroy();
       }
 
-      // Create new chart
       this.pieChart = new Chart(canvas, {
         type: "pie",
         data: {
@@ -110,7 +107,6 @@ const ChartHandler = {
     if (!canvas) return;
 
     try {
-      // Fetch data from API
       const response = await fetch(
         "api/analytics/summary.php?type=income_vs_expense_monthly"
       );
@@ -121,7 +117,6 @@ const ChartHandler = {
         return;
       }
 
-      // Prepare chart data
       const labels = result.data.map((item) => item.month_label);
       const incomeData = result.data.map((item) =>
         Number.parseFloat(item.total_income)
@@ -130,12 +125,10 @@ const ChartHandler = {
         Number.parseFloat(item.total_expense)
       );
 
-      // Destroy existing chart
       if (this.barChart) {
         this.barChart.destroy();
       }
 
-      // Create new chart
       this.barChart = new Chart(canvas, {
         type: "bar",
         data: {

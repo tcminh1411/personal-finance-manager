@@ -1,20 +1,60 @@
-# 1. Rác hệ thống & Editor
+# IDE and editor
 .vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
+*.iml
+out/
+
+# OS generated files
 .DS_Store
 Thumbs.db
+desktop.ini
+ehthumbs.db
+Icon?
 
-# 2. File log lỗi
+# Logs and runtime files
 *.log
 error_log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+phpunit.xml.cache
+.phpunit.result.cache
 
-# 3. File nháp
-test_api.php
-test_db.php
+# Environment and config
+.env
+.env.local
+.env.*.local
+.htaccess
 
-# 4. File gộp code
+# Dependency directories
+/vendor/
+/node_modules/
+composer.phar
+
+# Build and temporary files
+/dist/
+/build/
+/public/build/
+/public/hot
+/storage/
+/cache/
+/tmp/
+
+# Temporary and scratch files
+*.swp
+*.swo
+*.tmp
+*.temp
+~*
+
+# Generated exports / reports
 personal-finance-manager-output.md
 personal-finance-manager-output.txt
 
-# Dependencies
-node_modules/
+# Custom temp files
+test_api.php
+test_db.php
+*.xml
+.repomixignore

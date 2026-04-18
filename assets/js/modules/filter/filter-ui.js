@@ -144,17 +144,6 @@ const FilterUI = {
   },
 
   /**
-   * Clear all filter inputs
-   * Now handled by FilterEvents.clearAllFilters
-   */
-  clearFilterInputs() {
-    // This function is now handled by FilterEvents
-    console.warn(
-      "clearFilterInputs is deprecated. Use FilterEvents.clearAllFilters instead."
-    );
-  },
-
-  /**
    * Reset sort state
    */
   resetSortState() {

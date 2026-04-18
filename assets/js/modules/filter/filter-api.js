@@ -12,7 +12,6 @@ const FilterAPI = {
    * @returns {Promise<void>}
    */
   async applyFilters() {
-    // Cancel previous request if exists
     if (this.currentAbortController) {
       this.currentAbortController.abort();
     }
@@ -39,7 +38,7 @@ const FilterAPI = {
         FilterUI.updateFilterInfo(
           0,
           "error",
-          result.message || "Unknown error"
+          result.message || "Unknown error",
         );
       }
     } catch (error) {
@@ -47,7 +46,7 @@ const FilterAPI = {
         FilterUI.updateFilterInfo(
           0,
           "error",
-          "Không thể tải dữ liệu. Vui lòng thử lại."
+          "Không thể tải dữ liệu. Vui lòng thử lại.",
         );
       }
     } finally {
@@ -71,8 +70,6 @@ const FilterAPI = {
 
     const sortColumn = columnMapping[sort.column] || sort.column;
     const params = new URLSearchParams();
-
-    // Collect filter values
     const filterValues = {
       search: FilterUI.getValue("filter-search"),
       type: FilterUI.getValue("filter-type"),
@@ -83,7 +80,6 @@ const FilterAPI = {
       sort_order: sort.order,
     };
 
-    // Add non-empty values to params
     Object.entries(filterValues).forEach(([key, value]) => {
       if (value !== "" && value !== null && value !== undefined) {
         params.append(key, value.toString());
@@ -112,7 +108,6 @@ const FilterAPI = {
    * @param {Object} result.pagination - Pagination info
    */
   handleFilterSuccess(result) {
-    // Calculate starting index for row numbering
     let startIndex = 0;
 
     if (typeof PaginationHandler === "undefined") {
@@ -123,7 +118,6 @@ const FilterAPI = {
         (PaginationHandler.currentPage - 1) * PaginationHandler.perPage;
     }
 
-    // Update table and summary if handlers exist
     if (typeof TableHandler !== "undefined") {
       if (typeof TableHandler.updateTable === "function") {
         TableHandler.updateTable(result.data, startIndex);
@@ -134,17 +128,14 @@ const FilterAPI = {
       }
     }
 
-    // Update filter info message
     FilterUI.updateFilterInfo(result.summary.total_count);
 
-    // Update pagination UI
     if (typeof PaginationHandler !== "undefined" && result.pagination) {
       PaginationHandler.applyPaginationData(result.pagination);
     } else if (result.pagination) {
       FilterUI.updatePaginationUI(result.pagination);
     }
 
-    // Refresh charts if available
     if (
       typeof ChartHandler !== "undefined" &&
       typeof ChartHandler.refresh === "function"

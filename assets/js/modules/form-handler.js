@@ -15,6 +15,15 @@ const FormHandler = {
     this.setupFormSubmit();
     this.setupCancelButton();
     this.resetFormMode();
+
+    const addGdLink = document.querySelector('a[href="#addForm"]');
+    if (addGdLink) {
+      addGdLink.addEventListener('click', () => {
+        if (this.isEditMode) {
+          this.resetFormMode();
+        }
+      });
+    }
   },
 
   /**
@@ -52,12 +61,10 @@ const FormHandler = {
     const btnSubmit = form.querySelector("button[type='submit']");
     const originalText = btnSubmit.innerHTML;
 
-    // Show loading state
     btnSubmit.innerHTML = "<i class=\"ri-loader-line ri-spin\"></i> Đang xử lý...";
     btnSubmit.disabled = true;
 
     try {
-      // Validate form data
       const validation = Validation.validateForm();
 
       if (!validation.valid) {
@@ -66,7 +73,6 @@ const FormHandler = {
         return;
       }
 
-      // Prepare form data
       const formData = new FormData();
       const id = document.getElementById("transaction_id").value;
 
@@ -88,7 +94,6 @@ const FormHandler = {
         ? "api/transactions/update.php"
         : "api/transactions/save.php";
 
-      // Send request
       const response = await fetch(url, {
         method: "POST",
         body: formData,
@@ -99,7 +104,10 @@ const FormHandler = {
       if (data.success) {
         Utils.showNotification(data.message, "success");
         this.resetFormMode();
-        setTimeout(() => window.location.reload(), 1500);
+
+        if (typeof FilterHandler !== "undefined") {
+          FilterHandler.applyFilters();
+        }
       } else {
         Utils.showNotification("Lỗi: " + data.message, "error");
         this.resetButton(btnSubmit, originalText);

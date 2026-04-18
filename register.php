@@ -72,25 +72,25 @@
     </div>
 
     <script>
-    const form = document.getElementById('registerForm');
-    const password = document.getElementById('password');
-    const passwordConfirm = document.getElementById('password_confirm');
-    const mismatchMsg = document.getElementById('pw-mismatch');
+        const form = document.getElementById('registerForm');
+        const password = document.getElementById('password');
+        const passwordConfirm = document.getElementById('password_confirm');
+        const mismatchMsg = document.getElementById('pw-mismatch');
 
-    form.addEventListener('submit', (e) => {
-        if (password.value !== passwordConfirm.value) {
-            e.preventDefault();
-            passwordConfirm.focus();
-        }
-    });
+        form.addEventListener('submit', (e) => {
+            if (password.value !== passwordConfirm.value) {
+                e.preventDefault();
+                passwordConfirm.focus();
+            }
+        });
 
-    passwordConfirm.addEventListener('input', () => {
-        const mismatch = passwordConfirm.value && password.value !== passwordConfirm.value;
-        passwordConfirm.classList.toggle('border-red-400', mismatch);
-        passwordConfirm.classList.toggle('ring-1', mismatch);
-        passwordConfirm.classList.toggle('ring-red-400', mismatch);
-        mismatchMsg.classList.toggle('hidden', !mismatch);
-    });
+        passwordConfirm.addEventListener('input', () => {
+            const mismatch = passwordConfirm.value && password.value !== passwordConfirm.value;
+            passwordConfirm.classList.toggle('border-red-400', mismatch);
+            passwordConfirm.classList.toggle('ring-1', mismatch);
+            passwordConfirm.classList.toggle('ring-red-400', mismatch);
+            mismatchMsg.classList.toggle('hidden', !mismatch);
+        });
     </script>
 </body>
 

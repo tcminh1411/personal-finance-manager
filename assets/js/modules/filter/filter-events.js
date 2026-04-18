@@ -4,7 +4,6 @@
  */
 
 const FilterEvents = {
-  // Track last search value
   lastSearchValue: "",
   searchTimeout: null,
 
@@ -13,7 +12,7 @@ const FilterEvents = {
     this.bindResetButton();
     this.bindSearchInput();
     this.bindFilterType();
-    this.bindFilterCategory(); // ← FIX: Add category auto-filter
+    this.bindFilterCategory();
     this.bindDateShortcuts();
     this.bindSortHeaders();
   },
@@ -23,7 +22,6 @@ const FilterEvents = {
     if (!btn) return;
 
     btn.addEventListener("click", () => {
-      // Reset về trang 1 khi filter
       if (typeof FilterCore !== "undefined") {
         FilterCore.resetPagination();
       }
@@ -42,7 +40,7 @@ const FilterEvents = {
       // Clear all filter inputs
       this.clearAllFilters();
 
-      // Reset về trang 1
+      // Reset to page 1
       if (typeof FilterCore !== "undefined") {
         FilterCore.resetPagination();
       }
@@ -66,7 +64,6 @@ const FilterEvents = {
 
       clearTimeout(this.searchTimeout);
 
-      // Reset pagination về trang 1 khi search
       if (typeof FilterCore !== "undefined") {
         FilterCore.resetPagination();
       }
@@ -97,18 +94,15 @@ const FilterEvents = {
     filterType.addEventListener("change", (e) => {
       const selectedType = e.target.value;
 
-      // FIX: Filter categories BEFORE resetting category value
       if (typeof FilterCore !== "undefined") {
         FilterCore.filterCategoriesByType(selectedType);
       }
 
-      // FIX: Clear category selection after type changes
       const categorySelect = document.getElementById("filter-category");
       if (categorySelect) {
         categorySelect.value = "";
       }
 
-      // Reset pagination khi đổi loại
       if (typeof FilterCore !== "undefined") {
         FilterCore.resetPagination();
       }
@@ -116,18 +110,26 @@ const FilterEvents = {
         PaginationHandler.resetToFirstPage();
       }
 
-      // Auto apply filters
       FilterAPI.applyFilters();
     });
   },
 
-  // FIX: Add auto-filter when category changes
   bindFilterCategory() {
     const filterCategory = document.getElementById("filter-category");
+    const filterType = document.getElementById("filter-type");
     if (!filterCategory) return;
 
     filterCategory.addEventListener("change", () => {
-      // Reset pagination về trang 1
+      const selectedOption = filterCategory.options[filterCategory.selectedIndex];
+
+      // Auto-sync type based on selected category
+      if (selectedOption && selectedOption.value && selectedOption.dataset.type && filterType) {
+        const categoryType = selectedOption.dataset.type;
+        if (filterType.value !== categoryType) {
+          filterType.value = categoryType;
+        }
+      }
+
       if (typeof FilterCore !== "undefined") {
         FilterCore.resetPagination();
       }
@@ -135,7 +137,6 @@ const FilterEvents = {
         PaginationHandler.resetToFirstPage();
       }
 
-      // Auto apply filters (giống như filter-type)
       FilterAPI.applyFilters();
     });
   },
@@ -146,11 +147,11 @@ const FilterEvents = {
 
     buttons.forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        // Lấy range từ data attribute
+        // Get range from data attribute
         const range = e.target.dataset.range;
         if (!range) return;
 
-        // Gọi hàm setDateRange
+        // Call setDateRange function
         if (
           typeof FilterUI !== "undefined" &&
           typeof FilterUI.setDateRange === "function"
@@ -160,7 +161,7 @@ const FilterEvents = {
           this.setDateRangeFallback(range);
         }
 
-        // Reset pagination về trang 1
+        // Reset pagination to page 1
         if (typeof FilterCore !== "undefined") {
           FilterCore.resetPagination();
         }
@@ -201,7 +202,7 @@ const FilterEvents = {
 
         th.classList.add("text-blue-600", "font-semibold");
 
-        // Reset pagination về trang 1 khi sort
+        // Reset pagination to page 1 when sorting
         if (typeof FilterCore !== "undefined") {
           FilterCore.resetPagination();
         }

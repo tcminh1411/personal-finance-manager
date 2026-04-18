@@ -1,14 +1,13 @@
 <?php
+
 /**
  * Analytics Summary API
  * Provides grouped data for charts and analytics (FILTERED BY USER)
  */
 header('Content-Type: application/json');
 
-// Start session to get user_id
 session_start();
 
-// Check if user is logged in
 if (!isset($_SESSION['logged_in']) || !isset($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
@@ -24,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    // Get current user ID
     $current_user_id = $_SESSION['user_id'];
 
     $type = $_GET['type'] ?? 'expense_by_category';
@@ -50,7 +48,6 @@ try {
         'success' => true,
         'data' => $data
     ]);
-
 } catch (Exception $e) {
     http_response_code(400);
     echo json_encode([

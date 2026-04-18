@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Login Process Handler - UNIFIED VERSION
  * Handles both plain text AND hashed passwords
@@ -50,13 +51,11 @@ try {
         // Password is hashed → Use password_verify()
         $passwordMatches = password_verify($password, $user['password']);
 
-        // For debugging (remove after fixing):
         error_log("User: {$username} - Using hash verification");
     } else {
         // Password is plain text → Use direct comparison
         $passwordMatches = ($password === $user['password']);
 
-        // For debugging (remove after fixing):
         error_log("User: {$username} - Using plain text comparison (UPGRADE NEEDED!)");
 
         // Auto-upgrade: Convert to hash for next login
@@ -71,7 +70,6 @@ try {
     }
 
     if ($passwordMatches) {
-        // Login success
         $_SESSION[SESSION_USER_ID] = $user['id'];
         $_SESSION[SESSION_USERNAME] = $user['username'];
         $_SESSION[SESSION_LOGGED_IN] = true;
@@ -82,12 +80,10 @@ try {
         header(HEADER_LOCATION . MAIN_PAGE);
         exit;
     } else {
-        // Login failed
         $_SESSION[SESSION_LOGIN_ERROR] = 'Tên đăng nhập hoặc mật khẩu không đúng!';
         header(HEADER_LOCATION . LOGIN_PAGE);
         exit;
     }
-
 } catch (PDOException $e) {
     error_log("Login error: " . $e->getMessage());
     $_SESSION[SESSION_LOGIN_ERROR] = 'Lỗi hệ thống. Vui lòng thử lại!';
