@@ -1,1 +1,292 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* ==================== FORM VALIDATION & TYPOGRAPHY ==================== */
+  .input-error {
+    @apply border-red-400 ring-1 ring-red-400;
+  }
+  .required-star {
+    @apply text-red-400;
+  }
+  .link-primary {
+    @apply text-blue-600 hover:underline font-medium;
+  }
+  .p-sm {
+    @apply text-sm text-gray-400;
+  }
+  .p-lg {
+    @apply text-center text-lg text-gray-500 mt-4;
+  }
+
+  /* ==================== CARDS & CONTAINERS ==================== */
+  .card {
+    @apply bg-white border border-gray-200 rounded-xl p-4 text-center;
+  }
+  .card-auth {
+    @apply w-full bg-white rounded-2xl border border-gray-200 p-6;
+  }
+  .section-form {
+    @apply bg-white border border-gray-200 rounded-2xl p-4 mb-5 scroll-mt-40;
+  }
+  .section-title {
+    @apply text-center text-2xl font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2;
+  }
+  .auth-title {
+    @apply text-2xl font-medium text-gray-800 flex items-center justify-center gap-2 mb-6;
+  }
+  .divider {
+    @apply my-6 h-[1px] w-full;
+    background: linear-gradient(
+      to right,
+      transparent,
+      theme("colors.gray.200"),
+      transparent
+    );
+  }
+
+  /* ==================== FORM CONTROLS ==================== */
+  .form-auth {
+    @apply flex flex-col gap-4;
+  }
+  .form-group {
+    @apply flex flex-col gap-2;
+  }
+  .form-label {
+    @apply text-base font-medium text-gray-700;
+  }
+  .form-label-lg {
+    @apply text-lg font-medium text-gray-700;
+  }
+  .form-input {
+    @apply w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base
+           focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+  .form-input-lg {
+    @apply w-full px-3 py-2.5 border border-gray-300 rounded-lg text-lg
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+  .form-select {
+    @apply w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base
+           focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  /* ==================== FILTERS & TABLES ==================== */
+  .highlight-blue {
+    @apply !text-blue-600 !font-semibold;
+  }
+  .filter-group {
+    @apply flex flex-wrap justify-center gap-3 mb-3;
+  }
+  .filter-row {
+    @apply flex flex-col gap-3 mb-3;
+  }
+  .filter-info-error {
+    @apply text-red-700 text-base px-2 py-1 text-center;
+  }
+  .filter-info-success {
+    @apply text-green-700 text-base px-2 py-1 text-center;
+  }
+  .filter-info-empty {
+    @apply text-gray-500 text-base px-2 py-1 text-center;
+  }
+  .table-th {
+    @apply whitespace-nowrap text-center text-sm font-medium text-gray-500 uppercase tracking-wide px-3 py-3 border-b border-gray-200 cursor-pointer hover:text-gray-800 select-none;
+  }
+
+  /* ==================== BUTTONS ==================== */
+  .btn-primary {
+    @apply w-full bg-blue-400 text-white py-2.5 rounded-lg font-medium text-base
+           hover:bg-blue-600 active:scale-[0.98] transition-all;
+  }
+  .btn-primary-lg {
+    @apply w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium text-lg
+           hover:bg-blue-700 active:scale-[0.98] transition-all;
+  }
+  .btn-filter-range {
+    @apply h-10 px-4 py-2 text-sm border border-gray-300 rounded-full
+           hover:bg-gray-50 hover:border-blue-400 hover:text-blue-600 transition-colors;
+  }
+  .btn-page {
+    @apply w-8 h-8 flex items-center justify-center border border-gray-200 rounded-lg text-base
+           hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors;
+  }
+  .btn-page-active {
+    @apply bg-blue-600 text-white border-blue-600;
+  }
+  .btn-control {
+    @apply flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-base text-white
+           transition-colors duration-200 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-offset-1;
+  }
+  .btn-edit {
+    @apply text-sm px-2.5 py-1 border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors;
+  }
+  .btn-delete {
+    @apply text-sm px-2.5 py-1 border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition-colors;
+  }
+
+  /* ==================== ALERTS & NOTIFICATIONS ==================== */
+  .alert-error {
+    @apply text-red-700 text-base px-2 py-1 text-center;
+  }
+  .alert-success {
+    @apply text-green-700 text-base px-2 py-1 text-center;
+  }
+
+  /* ==================== CHARTS & STATISTICS ==================== */
+  .chart-container {
+    @apply relative h-48;
+  }
+  .chart-header {
+    @apply text-xl font-medium text-red-800 text-center mb-3;
+  }
+  .chart-text {
+    @apply text-sm text-gray-400 text-center mt-2;
+  }
+  .stat-header {
+    @apply text-base font-medium text-gray-700 mb-1;
+  }
+  .stat-value {
+    @apply text-xl font-medium;
+  }
+
+  /* ==================== HEADER & NAVIGATION ==================== */
+  .app-header {
+    @apply fixed top-0 left-0 w-full shadow-md z-50 bg-gray-200;
+  }
+  .header-container {
+    @apply flex flex-col items-center gap-2 py-2 px-4;
+  }
+  .logo {
+    @apply text-2xl font-bold text-gray-800;
+  }
+  .user-info {
+    @apply flex items-center text-lg gap-6;
+  }
+  .main-nav {
+    @apply w-full flex justify-center py-1;
+  }
+  .nav-list {
+    @apply flex gap-1 font-medium;
+  }
+  .nav-link {
+    @apply px-3 py-1.5 rounded-full hover:bg-blue-50 hover:text-blue-600 transition flex items-center gap-1;
+  }
+  .header-spacer {
+    @apply h-36;
+  }
+
+  /* ==================== LAYOUT & GRIDS ==================== */
+  .main-container {
+    @apply px-4 py-5 max-w-7xl mx-auto bg-gradient-to-t from-gray-200 to-white bg-fixed;
+  }
+  .stats-grid {
+    @apply grid grid-cols-1 gap-3;
+  }
+  .chart-grid {
+    @apply grid grid-cols-1 gap-4;
+  }
+  .form-grid {
+    @apply grid grid-cols-1 gap-4;
+  }
+  .full-width {
+    @apply col-span-1;
+  }
+  .auth-container {
+    @apply min-h-screen bg-[url('../images/background.jpg')] bg-cover bg-center flex flex-col items-center justify-center px-4 py-8;
+  }
+  .app-footer {
+    @apply text-center py-4 border-t border-gray-200 bg-gray-50 text-gray-500 text-sm;
+  }
+}
+
+/* ==================== RESPONSIVE BREAKPOINTS ==================== */
+@media (min-width: 640px) {
+  .card-auth {
+    @apply max-w-sm;
+  }
+  .filter-row {
+    @apply flex-row gap-3;
+  }
+  .stats-grid {
+    @apply grid-cols-3;
+  }
+  .hide-mobile {
+    @apply inline-block;
+  }
+}
+
+@media (min-width: 768px) {
+  .main-container {
+    @apply px-6 py-6;
+  }
+  .stats-grid {
+    @apply grid-cols-3;
+  }
+  .chart-grid {
+    @apply grid-cols-2;
+  }
+  .chart-container {
+    @apply h-56;
+  }
+  .form-grid {
+    @apply grid-cols-2;
+  }
+  .full-width {
+    @apply col-span-2;
+  }
+  .header-container {
+    @apply flex-row flex-wrap justify-between px-6;
+  }
+  .logo {
+    @apply shrink-0;
+  }
+  .user-info {
+    @apply order-2 shrink-0;
+  }
+  .main-nav {
+    @apply order-3;
+  }
+  .nav-list {
+    @apply gap-3;
+  }
+  .header-spacer {
+    @apply h-20;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chart-container {
+    @apply h-64;
+  }
+  .header-container {
+    @apply flex-nowrap gap-4;
+  }
+  .user-info {
+    @apply order-3;
+  }
+  .main-nav {
+    @apply order-2 flex-1 w-auto;
+  }
+  .header-spacer {
+    @apply h-12;
+  }
+}
+
+@media (max-width: 768px) {
+  .btn-filter-range {
+    @apply text-xs px-2 py-1;
+  }
+  .table-th {
+    @apply text-xs px-2 py-2;
+  }
+  .btn-edit,
+  .btn-delete {
+    @apply text-xs px-2 py-0.5;
+  }
+  .app-footer {
+    @apply py-2 text-xs;
+  }
+}

@@ -16,7 +16,6 @@ const PaginationHandler = {
     this.loadSettings();
   },
 
-
   setupEventListeners() {
     document.addEventListener("click", (e) => {
       const target = e.target;
@@ -31,7 +30,6 @@ const PaginationHandler = {
     });
   },
 
-
   handlePaginationClick(e) {
     const btn = e.target.closest("button");
     if (!btn) return;
@@ -39,9 +37,11 @@ const PaginationHandler = {
     const action = btn.dataset.action;
 
     const actions = {
-      "prev": () => this.goToPage(this.currentPage - 1),
-      "next": () => this.goToPage(this.currentPage + 1),
-      "page": () => {
+      first: () => this.goToPage(1),
+      prev: () => this.goToPage(this.currentPage - 1),
+      next: () => this.goToPage(this.currentPage + 1),
+      last: () => this.goToPage(this.totalPages),
+      page: () => {
         const page = Number.parseInt(btn.dataset.page, 10);
         if (!Number.isNaN(page)) this.goToPage(page);
       },
@@ -51,7 +51,6 @@ const PaginationHandler = {
       actions[action]();
     }
   },
-
 
   handlePerPageChange(e) {
     const value = Number.parseInt(e.target.value, 10);
@@ -67,7 +66,6 @@ const PaginationHandler = {
     }
   },
 
-
   goToPage(page) {
     if (page < 1 || page > this.totalPages) return;
 
@@ -80,7 +78,6 @@ const PaginationHandler = {
       });
     }
   },
-
 
   resetToFirstPage() {
     this.currentPage = 1;
@@ -105,7 +102,6 @@ const PaginationHandler = {
     });
   },
 
-
   updatePaginationInfo() {
     const el = document.getElementById("pagination-info");
     if (!el) return;
@@ -118,9 +114,8 @@ const PaginationHandler = {
     const start = (this.currentPage - 1) * this.perPage + 1;
     const end = Math.min(this.currentPage * this.perPage, this.totalRows);
 
-    el.innerHTML = `Hiển thị <strong>${start}-${end}</strong> / <strong>${this.totalRows}</strong>`;
+    el.innerHTML = `Đang hiển thị <strong>${start}-${end}</strong> / <strong>${this.totalRows}</strong>`;
   },
-
 
   applyPaginationData(paginationData) {
     this.currentPage = paginationData.current_page;
@@ -131,7 +126,6 @@ const PaginationHandler = {
     this.updatePaginationInfo();
     this.renderPaginationButtons();
   },
-
 
   renderPaginationButtons() {
     const el = document.getElementById("pagination-controls");
@@ -148,31 +142,41 @@ const PaginationHandler = {
     }
   },
 
-
   buildSimplePagination() {
     const pages = this.getVisiblePages(5);
     const { currentPage, totalPages } = this;
 
     return `
-            <button class="w-8 h-8 flex items-center justify-center border border-gray-200 rounded-lg text-base hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors" data-action="prev" ${
-              currentPage === 1 ? "disabled" : ""
-            }>‹</button>
-            ${pages
-              .map(
-                (page) =>
-                  `<button class="w-8 h-8 flex items-center justify-center border rounded-lg text-base transition-colors ${
-                    page === currentPage
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'border-gray-200 hover:bg-gray-50'
-                  }" data-action="page" data-page="${page}">${page}</button>`
-              )
-              .join("")}
-            <button class="w-8 h-8 flex items-center justify-center border border-gray-200 rounded-lg text-base hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors" data-action="next" ${
-              currentPage === totalPages ? "disabled" : ""
-            }>›</button>
-        `;
+    <button class="btn-page" 
+            data-action="first" 
+            ${currentPage === 1 ? "disabled" : ""}>
+      <i class="ri-skip-left-line"></i>
+    </button>
+    <button class="btn-page" 
+            data-action="prev" 
+            ${currentPage === 1 ? "disabled" : ""}>
+      <i class="ri-arrow-left-s-line"></i>
+    </button>
+    ${pages
+      .map(
+        (page) => `
+      <button class="btn-page ${page === currentPage ? "btn-page-active" : ""}" 
+        data-action="page" data-page="${page}">${page}</button>
+    `,
+      )
+      .join("")}
+    <button class="btn-page" 
+            data-action="next" 
+            ${currentPage === totalPages ? "disabled" : ""}>
+      <i class="ri-arrow-right-s-line"></i>
+    </button>
+    <button class="btn-page" 
+            data-action="last" 
+            ${currentPage === totalPages ? "disabled" : ""}>
+      <i class="ri-skip-right-line"></i>
+    </button>
+  `;
   },
-
 
   getVisiblePages(max = 5) {
     let start = Math.max(1, this.currentPage - Math.floor(max / 2));
@@ -184,7 +188,6 @@ const PaginationHandler = {
 
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   },
-
 
   loadSettings() {
     try {
@@ -200,7 +203,6 @@ const PaginationHandler = {
       console.warn("Cannot load pagination settings:", error);
     }
   },
-
 
   saveSettings() {
     try {

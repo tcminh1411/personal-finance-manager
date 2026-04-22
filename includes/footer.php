@@ -1,5 +1,5 @@
-<footer>
-    <p class="text-center">&copy; <?= date('Y') ?> Personal Finance Manager - Hybrid Fullstack Project</p>
+<footer class="app-footer">
+    <p>&copy; <?= date('Y') ?> Personal Finance Manager - Hybrid Fullstack Project</p>
 </footer>
 
 <script src="./assets/js/modules/utils.js"></script>

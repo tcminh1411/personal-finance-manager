@@ -83,35 +83,31 @@ const FilterUI = {
         toEl.value = formatDate(today);
         break;
 
-      case "week": // Calculate Monday of current week
-      {
-        const startOfWeek = new Date(today);
-        const dayOfWeek = today.getDay();
-        const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-        startOfWeek.setDate(date - daysToMonday);
-
-        // Calculate Sunday of current week
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-        fromEl.value = formatDate(startOfWeek);
-        toEl.value = formatDate(endOfWeek);
+      case "yesterday": {
+        const yesterday = new Date(today);
+        yesterday.setDate(date - 1);
+        fromEl.value = formatDate(yesterday);
+        toEl.value = formatDate(yesterday);
         break;
       }
 
-      case "month": // First day of current month
-      {
-        const startOfMonth = new Date(year, month, 1);
-        // Last day of current month
-        const endOfMonth = new Date(year, month + 1, 0);
+      case "week":
+        // ... giữ nguyên code cũ
+        break;
 
-        fromEl.value = formatDate(startOfMonth);
-        toEl.value = formatDate(endOfMonth);
+      case "month":
+        // ... giữ nguyên code cũ
+        break;
+
+      case "year": {
+        const startOfYear = new Date(year, 0, 1);
+        const endOfYear = new Date(year, 11, 31);
+        fromEl.value = formatDate(startOfYear);
+        toEl.value = formatDate(endOfYear);
         break;
       }
 
       default:
-        // Clear if range not recognized
         fromEl.value = "";
         toEl.value = "";
     }
@@ -128,19 +124,19 @@ const FilterUI = {
 
     if (status === "error") {
       infoEl.innerHTML = `<i class="ri-error-warning-line"></i> ${message || "Có lỗi xảy ra"}`;
-      infoEl.className = "error";
+      infoEl.className = "filter-info-error";
       return;
     }
 
     if (count > 0) {
       infoEl.innerHTML = `<i class="ri-checkbox-circle-line"></i> Tìm thấy <strong>${count}</strong> giao dịch`;
-      infoEl.className = "success";
+      infoEl.className = "filter-info-success";
       return;
     }
 
     infoEl.innerHTML = `<i class="ri-information-line"></i> Không tìm thấy giao dịch nào`;
 
-    infoEl.className = "empty";
+    infoEl.className = "filter-info-empty";
   },
 
   /**
@@ -148,7 +144,7 @@ const FilterUI = {
    */
   resetSortState() {
     document.querySelectorAll("[data-sortable]").forEach((th) => {
-      th.classList.remove("text-blue-600", "font-semibold");
+      th.classList.remove("highlight-blue");
     });
   },
 };

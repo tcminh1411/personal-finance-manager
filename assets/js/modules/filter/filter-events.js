@@ -120,10 +120,16 @@ const FilterEvents = {
     if (!filterCategory) return;
 
     filterCategory.addEventListener("change", () => {
-      const selectedOption = filterCategory.options[filterCategory.selectedIndex];
+      const selectedOption =
+        filterCategory.options[filterCategory.selectedIndex];
 
       // Auto-sync type based on selected category
-      if (selectedOption && selectedOption.value && selectedOption.dataset.type && filterType) {
+      if (
+        selectedOption &&
+        selectedOption.value &&
+        selectedOption.dataset.type &&
+        filterType
+      ) {
         const categoryType = selectedOption.dataset.type;
         if (filterType.value !== categoryType) {
           filterType.value = categoryType;
@@ -189,7 +195,7 @@ const FilterEvents = {
         if (currentState.sort.column === column) {
           FilterCore.setSort(
             column,
-            currentState.sort.order === "ASC" ? "DESC" : "ASC"
+            currentState.sort.order === "ASC" ? "DESC" : "ASC",
           );
         } else {
           FilterCore.setSort(column, "DESC");
@@ -197,10 +203,10 @@ const FilterEvents = {
 
         // Update UI
         headers.forEach((h) => {
-          h.classList.remove("text-blue-600", "font-semibold");
+          h.classList.remove("highlight-blue");
         });
 
-        th.classList.add("text-blue-600", "font-semibold");
+        th.classList.add("highlight-blue");
 
         // Reset pagination to page 1 when sorting
         if (typeof FilterCore !== "undefined") {
@@ -238,7 +244,7 @@ const FilterEvents = {
 
     // Reset sort headers
     document.querySelectorAll("[data-sortable]").forEach((th) => {
-      th.classList.remove("text-blue-600", "font-semibold");
+      th.classList.remove("highlight-blue");
     });
 
     // Reset FilterCore sort state

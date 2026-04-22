@@ -217,6 +217,14 @@ function getDateRange($range)
             $to = $dateStr;
             break;
 
+        case 'yesterday':
+            $yesterday = clone $today;
+            $yesterday->modify('-1 day');
+            $dateStr = $yesterday->format('Y-m-d');
+            $from = $dateStr;
+            $to = $dateStr;
+            break;
+
         case 'week':
             $weekRange = calculateWeekRange($today);
             $from = $weekRange['start']->format('Y-m-d');

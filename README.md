@@ -1,78 +1,71 @@
 # Personal Finance Manager
 
-> Modern web application for personal financial management with real-time tracking, advanced filtering, and data visualization.
+A full-stack personal finance web application to track income and expenses, visualize spending, and manage transactions in real time.
 
-![Status](https://img.shields.io/badge/status-live-success) ![PHP](https://img.shields.io/badge/PHP-8.0%2B-777BB4?logo=php) ![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E?logo=javascript) ![MySQL](https://img.shields.io/badge/MySQL-5.7%2B-4479A1?logo=mysql)
-
-**Live Demo:** [https://personalfinance.lovestoblog.com/](https://personalfinance.lovestoblog.com/)  
-**Demo Accounts:** `admin`/`123456` or `minh`/`141103`
+Live demo: https://personalfinance.lovestoblog.com/  
+Demo login: `admin` / `123456` or `minh` / `141103`
 
 ---
 
-## Screenshots
+## 📸 Screenshot
 
-<img src="assets/images/demo/fullpage.png" alt="Dashboard" width="800"/>
+![Dashboard](assets/images/demo/fullpage.png)
 
 ---
 
-## Key Features
+## Features
 
-### Security
+**Transaction Management**
 
-- Bcrypt password hashing + Session timeout
-- SQL injection prevention (PDO prepared statements)
-- XSS protection + Input validation
-- User data isolation (transactions filtered by user_id)
+- Create, read, update, delete with AJAX (no page reload)
+- Smart category filtering based on transaction type (income/expense)
+- Real-time validation on both frontend and backend
+- Date defaults to today and blocks future dates
 
-### Transaction Management
+**Filtering and Search**
 
-- CRUD with AJAX (no page reload)
-- Smart category auto-filtering by type
-- Real-time validation (frontend + backend)
-- Date management (defaults to today, blocks future dates)
-
-### Advanced Filtering
-
-- Multi-criteria: Type, Category, Date Range, Keyword
-- Debounced search (500ms delay)
+- Filter by type, category, date range, or keyword
 - Quick filters: Today, This Week, This Month
-- Column sorting (Date, Amount, Category, Description)
+- Debounced keyword search (500ms)
+- Sortable columns: date, amount, category, description
 
-### Visualization
+**Dashboard and Charts**
 
-- Chart.js integration (Pie Chart + Bar Chart)
-- Real-time updates after CRUD operations
-- Responsive design for all screen sizes
+- Chart.js shows a pie chart (spending by category) and a bar chart (monthly trend)
+- Charts update live after every transaction change
+- Summary cards: balance, total income, total expense
 
-### Responsive Design
+**User Experience**
 
-- Mobile-first approach
-- 6 breakpoints (360px to 1400px)
-- Toggle form on small screens (< 1000px)
-- Sticky sidebar on desktop
+- Responsive design with Tailwind CSS (works on screens from 360px to 1400px+)
+- Sticky header that hides and shows on scroll
+- One-click demo login button
+- Loading indicators, toast notifications, and confirmation dialogs
 
-### Other Features
+**Data Export**
 
-- Server-side pagination (10/25/50/100 rows)
-- CSV export with summary
-- Excel-compatible UTF-8 encoding
-- Loading states + notifications
+- Export transactions to CSV (respects active filters)
+- UTF-8 BOM included for Excel compatibility
+
+**Security**
+
+- Bcrypt password hashing
+- PDO prepared statements (prevents SQL injection)
+- XSS sanitisation and CSRF session checks
+- User data isolated by user_id
+- Session timeout
 
 ---
 
-## Tech Stack
+## Technology Stack
 
-**Backend:** PHP 8.0+, MySQL 5.7+, PDO, bcrypt  
-**Frontend:** HTML5, CSS3 (Grid/Flexbox), Vanilla JavaScript ES6+  
-**Libraries:** Chart.js 4.4.0  
-**Hosting:** InfinityFree (Free)
+- Backend: PHP 8.0+, MySQL 5.7+, PDO
+- Frontend: Vanilla JavaScript (ES6+), Tailwind CSS
+- Charts: Chart.js 4.4.0
+- Authentication: bcrypt, PHP sessions
+- Hosting: InfinityFree
 
-**Architecture:**
-
-- 9 CSS modules (modular styling)
-- 14 JS modules + 1 app entry (modular logic)
-- 7 API endpoints (RESTful)
-- 3 SQL migrations (schema + data)
+The application uses 7 REST-like API endpoints (under /api/), 14 JavaScript modules, 3 SQL migration files, and semantic data-action attributes for JavaScript hooks.
 
 ---
 
@@ -80,156 +73,76 @@
 
 ```
 personal-finance-manager/
-├── api/                         # RESTful API endpoints (7 files)
-│   ├── analytics/summary.php    # Chart data
-│   ├── categories/list.php      # Category management
-│   └── transactions/            # CRUD operations
-│       ├── delete.php, export.php, filter.php
-│       ├── save.php, update.php
+├── api/
+│   ├── analytics/summary.php       # Chart & summary data
+│   ├── categories/list.php
+│   └── transactions/               # save, update, delete, filter, export
 ├── assets/
-│   ├── css/modules/             # 9 CSS modules + manifest
-│   ├── images/demo/             # Screenshots
-│   └── js/modules/              # 14 JS modules + app.js
-│       ├── filter/              # 5-file filter system
-│       └── chart-handler.js, form-handler.js, etc.
-├── auth/                        # Authentication (4 files)
-│   ├── check-auth.php, login-process.php
-│   ├── logout.php, register-process.php
-├── config/
-│   └── database.php             # DB connection
-├── includes/
-│   ├── footer.php, header.php, helpers.php
-├── migrations/                  # 3 SQL files
-│   ├── 001_init.sql, 002_update_password_hash.sql
-│   └── 003.sql                  # 100 sample transactions
-├── .htaccess                    # Security headers
-├── index.php, login.php, register.php
-└── README.md
+│   ├── css/                        # Tailwind CSS v4 entry + utilities
+│   ├── images/demo/
+│   └── js/modules/
+│       ├── filter/                 # 5-file filter system
+│       ├── chart-handler.js
+│       ├── form-handler.js
+│       ├── sticky-header.js
+│       └── ...
+├── auth/                           # login, logout, register processes
+├── config/database.php
+├── includes/                       # header, footer, helpers
+├── migrations/
+│   ├── 001_init.sql
+│   ├── main.sql
+├── index.php
+├── login.php
+└── register.php
 ```
 
 ---
 
-## Installation
+## Local Setup
 
-### Prerequisites
+Requirements: XAMPP or Laragon with PHP 8.0+ and MySQL 5.7+
 
-- XAMPP/Laragon (PHP 8.0+, MySQL 5.7+)
-- Modern browser
+1. Clone the repository:  
+   `git clone https://github.com/tcminh1411/personal-finance-manager.git`
 
-### Quick Start
+2. Move the folder into your web server's document root (e.g. htdocs for XAMPP)
 
-```bash
-# 1. Clone repository
-git clone https://github.com/tcminh1411/personal-finance-manager.git
+3. Create a database in phpMyAdmin:  
+   Name: `finance_db` | Collation: `utf8mb4_unicode_ci`
 
-# 2. Move to htdocs
-mv personal-finance-manager /path/to/xampp/htdocs/
+4. Import the migration files in order (found in the migrations/ folder):
+   - `main.sql`
 
-# 3. Create database in phpMyAdmin
-# - Database name: finance_db
-# - Collation: utf8mb4_unicode_ci
+5. (Optional) Update database credentials in `config/database.php`
 
-# 4. Import SQL files (in order)
-migrations/main.sql
-
-# 5. Configure database (if needed)
-# Edit config/database.php
-
-# 6. Access application
-# http://localhost/personal-finance-manager
-
-# 7. Login with demo account
-# Username: admin / Password: 123456
-```
+6. Open your browser and visit:  
+   `http://localhost/personal-finance-manager`
 
 ---
 
 ## Quick Usage Guide
 
-**Add Transaction:** Fill form → Select type → Choose category → Enter amount/description → Submit
-
-**Filter Data:** Use search box / Select type & category / Pick date range / Click "Loc"
-
-**Sort:** Click column headers
-
-**Edit:** Click "Sua" button → Modify → Update
-
-**Delete:** Click "Xoa" → Confirm
-
-**Export CSV:** Apply filters (optional) → Click "Xuat CSV"
-
-**View Charts:** Scroll down to "Phan Tich Chi Tieu" section
-
----
-
-## Project Stats
-
-| Metric                | Value                     |
-| --------------------- | ------------------------- |
-| **Total Files**       | 49 (code + assets)        |
-| **Lines of Code**     | ~8,500+                   |
-| **PHP Files**         | 18 (API + Auth + Pages)   |
-| **JavaScript Files**  | 15 (14 modules + app)     |
-| **CSS Files**         | 10 (9 modules + manifest) |
-| **SQL Migrations**    | 3 (schema + data)         |
-| **Development Time**  | 7 weeks                   |
-| **Features**          | 40+                       |
-| **Breakpoints**       | 6 responsive breakpoints  |
-| **Demo Transactions** | 100 (user: minh)          |
-
----
-
-## Development Notes
-
-Built with a focus on modern development workflows, leveraging AI-assisted coding for rapid prototyping and boilerplate efficiency. I maintained full ownership of the logic architecture and problem-solving process, ensuring the application remains robust, secure, and scalable.
-
----
-
-## Known Issues & Roadmap
-
-**Current Limitations:**
-
-- Charts require modern browser (no IE11 support)
-- Free hosting may have occasional downtime
-
-**Planned Enhancements:**
-
-- Budget planning and goals
-- Recurring transactions
-- Multi-currency support
-- Mobile app (React Native)
-- Two-factor authentication
-- PDF reports
-- Bank statement import
+| Action               | How to do it                                            |
+| -------------------- | ------------------------------------------------------- |
+| Add transaction      | Fill the form, choose type and category, then submit    |
+| Filter transactions  | Use search box, dropdowns, or date range → click Filter |
+| Sort                 | Click any column header                                 |
+| Edit a transaction   | Click Edit → modify → update                            |
+| Delete a transaction | Click Delete → confirm                                  |
+| Export to CSV        | (Optional: apply filters) → click Export CSV            |
+| View spending charts | Scroll down to the Spending Analysis section            |
 
 ---
 
 ## License
 
-MIT License - Copyright (c) 2026 Thai Cao Minh
-
-Free to use, modify, and distribute. See [LICENSE](LICENSE) file for details.
+MIT License – (c) 2026 Thai Cao Minh  
+Free to use, modify, and distribute.
 
 ---
 
 ## Contact
 
-**Developer:** Thai Cao Minh  
-**Email:** [tcminh1411@gmail.com](mailto:tcminh1411@gmail.com)  
-**GitHub:** [github.com/tcminh1411](https://github.com/tcminh1411)  
-**Live Demo:** [personalfinance.lovestoblog.com](https://personalfinance.lovestoblog.com/)
-
-**Found a bug?** [Create an issue](https://github.com/tcminh1411/personal-finance-manager/issues)  
-**Security issue?** Email directly (do not post publicly)
-
----
-
-## Acknowledgments
-
-**Technology:** PHP Community • Chart.js Team • InfinityFree • OWASP  
-**Learning:** MDN Web Docs • Stack Overflow • freeCodeCamp  
-**AI Partner:** Anthropic Claude (coding companion throughout development)
-
----
-
-**Last Updated:** April 2026 | **Version:** 1.3.1 | **Status:** Production Ready
+Thai Cao Minh – tcminh1411@gmail.com  
+GitHub: https://github.com/tcminh1411
